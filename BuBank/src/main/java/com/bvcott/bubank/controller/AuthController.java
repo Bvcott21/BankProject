@@ -30,6 +30,14 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@RequestBody LoginSignupDTO dto) {
         log.info("Register triggered with values: {}", dto);
+
+        if (dto.getUsername() == null || dto.getUsername().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be empty.");
+        }
+        if (dto.getPassword() == null || dto.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty.");
+        }
+        
         User user = userService.registerUser(dto.getUsername(), dto.getPassword(), Role.ROLE_USER);
 
         log.info("Registered user: {}", user);
@@ -41,6 +49,13 @@ public class AuthController {
         log.info("Login triggered with values: {}", dto);
         log.info("Finding user by username");
         User user = userService.findByUsername(dto.getUsername());
+
+        if (dto.getUsername() == null || dto.getUsername().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be empty.");
+        }
+        if (dto.getPassword() == null || dto.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty.");
+        }
 
         if(user == null || !passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             log.error("Passwords don't match, throwing exception...");
