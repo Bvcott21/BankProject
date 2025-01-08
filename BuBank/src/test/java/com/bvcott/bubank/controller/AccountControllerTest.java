@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.bvcott.bubank.dto.CreateAccountDTO;
-import com.bvcott.bubank.model.Account;
+import com.bvcott.bubank.model.account.Account;
 import com.bvcott.bubank.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

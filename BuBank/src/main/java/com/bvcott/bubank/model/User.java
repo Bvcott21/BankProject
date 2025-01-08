@@ -3,6 +3,7 @@ package com.bvcott.bubank.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bvcott.bubank.model.account.Account;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;

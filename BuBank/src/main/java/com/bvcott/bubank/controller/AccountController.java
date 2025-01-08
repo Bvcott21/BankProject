@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bvcott.bubank.dto.CreateAccountDTO;
-import com.bvcott.bubank.model.Account;
+import com.bvcott.bubank.model.account.Account;
 import com.bvcott.bubank.service.AccountService;
 
 @RestController @RequestMapping("/api/v1/accounts")

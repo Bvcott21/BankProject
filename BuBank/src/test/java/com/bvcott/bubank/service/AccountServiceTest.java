@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.bvcott.bubank.dto.CreateAccountDTO;
-import com.bvcott.bubank.model.Account;
+import com.bvcott.bubank.model.account.Account;
 import com.bvcott.bubank.model.User;
 import com.bvcott.bubank.repository.UserRepository;
 

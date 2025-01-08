@@ -1,11 +1,9 @@
 package com.bvcott.bubank.service;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Service;
 
 import com.bvcott.bubank.dto.CreateAccountDTO;
-import com.bvcott.bubank.model.Account;
+import com.bvcott.bubank.model.account.Account;
 import com.bvcott.bubank.model.User;
 import com.bvcott.bubank.repository.AccountRepository;
 import com.bvcott.bubank.repository.UserRepository;
