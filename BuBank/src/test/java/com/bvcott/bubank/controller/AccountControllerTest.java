@@ -1,11 +1,13 @@
 package com.bvcott.bubank.controller;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bvcott.bubank.dto.CreateAccountDTO;
 import com.bvcott.bubank.filter.JwtFilter;
+import com.bvcott.bubank.model.account.Account;
 import com.bvcott.bubank.model.account.BusinessAccount;
 import com.bvcott.bubank.model.account.CheckingAccount;
 import com.bvcott.bubank.model.account.SavingsAccount;
@@ -25,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class AccountControllerTest {
 
@@ -246,5 +249,74 @@ public class AccountControllerTest {
 
         verify(jwtUtil, times(1)).extractUsername("mockJwtToken");
         verify(accountService, times(1)).createAccount(dto, username);
+    }
+
+    @Test
+    void test_getUserAccounts_success() throws Exception {
+        // Arrange: Create mock accounts
+        CheckingAccount checkingAccount = new CheckingAccount();
+        checkingAccount.setId(1L);
+        checkingAccount.setAccountNumber("ACC-CHK-00000001");
+        checkingAccount.setBalance(BigDecimal.valueOf(1000));
+        checkingAccount.setOverdraftLimit(BigDecimal.valueOf(500));
+
+        SavingsAccount savingsAccount = new SavingsAccount();
+        savingsAccount.setId(2L);
+        savingsAccount.setAccountNumber("ACC-SAV-00000001");
+        savingsAccount.setBalance(BigDecimal.valueOf(2000));
+        savingsAccount.setInterestRate(BigDecimal.valueOf(1.5));
+
+        List<Account> mockAccounts = List.of(checkingAccount, savingsAccount);
+
+        String mockToken = "Bearer mockJwtToken";
+        String username = "testUser";
+
+        // Mock JWT token behavior
+        when(jwtUtil.extractUsername("mockJwtToken")).thenReturn(username);
+        UserDetails userDetails = mock(UserDetails.class);
+        when(userDetails.getUsername()).thenReturn(username);
+        when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
+        when(jwtUtil.validateToken("mockJwtToken", username)).thenReturn(true);
+
+        // Mock service behavior
+        when(accountService.listUserAccounts(username)).thenReturn(mockAccounts);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/accounts")
+                        .header("Authorization", mockToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].accountNumber").value("ACC-CHK-00000001"))
+                .andExpect(jsonPath("$[1].accountNumber").value("ACC-SAV-00000001"))
+                .andExpect(jsonPath("$[0].balance").value(1000))
+                .andExpect(jsonPath("$[1].balance").value(2000));
+
+        // Verify interactions
+        verify(jwtUtil, times(1)).extractUsername("mockJwtToken");
+        verify(accountService, times(1)).listUserAccounts(username);
+    }
+
+    @Test
+    void test_getUserAccounts_missingAuthorizationHeader() throws Exception {
+        mockMvc.perform(get("/api/v1/accounts")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+
+        verifyNoInteractions(accountService);
+    }
+
+    @Test
+    void test_getUserAccounts_invalidToken() throws Exception {
+        String mockToken = "Bearer invalidToken";
+
+        when(jwtUtil.extractUsername("invalidToken")).thenThrow(new RuntimeException("Invalid token"));
+
+        mockMvc.perform(get("/api/v1/accounts")
+                        .header("Authorization", mockToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+
+        verify(jwtUtil, times(1)).extractUsername("invalidToken");
+        verifyNoInteractions(accountService);
     }
 }
