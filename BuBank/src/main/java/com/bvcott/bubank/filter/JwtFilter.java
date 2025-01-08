@@ -1,9 +1,13 @@
 package com.bvcott.bubank.filter;
 
+import jakarta.servlet.ServletException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import org.springframework.lang.NonNull;
@@ -14,45 +18,49 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class JwtFilter extends OncePerRequestFilter {
-    private final JwtUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
+import java.io.IOException;
 
-    public JwtFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
+public class JwtFilter extends OncePerRequestFilter implements ApplicationContextAware {
+    private final JwtUtil jwtUtil;
+    private ApplicationContext applicationContext;
+
+    public JwtFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
+    }
+
+    @Override public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, 
-        @NonNull HttpServletResponse response, 
-        @NonNull FilterChain filterChain) 
-            throws java.io.IOException, jakarta.servlet.ServletException {
-            String authorizationHeader = request.getHeader("Authorization");
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
+            throws ServletException, IOException, ServletException, IOException {
+        String authorizationHeader = request.getHeader("Authorization");
 
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                String token = authorizationHeader.substring(7);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
 
-                try {
-                    String username = jwtUtil.extractUsername(token);
+            try {
+                String username = jwtUtil.extractUsername(token);
 
-                    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetailsService userDetailsService = applicationContext.getBean(UserDetailsService.class);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                        if (jwtUtil.validateToken(token, userDetails.getUsername())) {
-                            UsernamePasswordAuthenticationToken authenticationToken =
-                                    new UsernamePasswordAuthenticationToken(
-                                            userDetails, null, userDetails.getAuthorities()
-                                    );
-                            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                        }
+                    if (jwtUtil.validateToken(token, userDetails.getUsername())) {
+                        UsernamePasswordAuthenticationToken authenticationToken =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     }
-                } catch (Exception e) {
-                    System.err.println("JWT validation failed: " + e.getMessage());
                 }
+            } catch (Exception e) {
+                System.err.println("JWT validation failed: " + e.getMessage());
             }
+        }
 
-        filterChain.doFilter(request, response);       
+        filterChain.doFilter(request, response);
     }
 }
 
