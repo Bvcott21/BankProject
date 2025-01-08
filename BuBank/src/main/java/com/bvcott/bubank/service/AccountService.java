@@ -55,6 +55,8 @@ public class AccountService {
         account.setBalance(dto.getInitialBalance());
         user.addAccount(account);
 
+        userRepo.save(user);
+
         return account;
     }
 
