@@ -40,6 +40,13 @@ public class JwtFilter extends OncePerRequestFilter implements ApplicationContex
             throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");
 
+        String requestURI = request.getRequestURI();
+
+        if(requestURI.startsWith("/api/v1/auth/register") || requestURI.startsWith("/api/v1/auth/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Return 401 Unauthorized
             return;
