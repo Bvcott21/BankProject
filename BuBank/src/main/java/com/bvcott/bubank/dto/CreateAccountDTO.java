@@ -10,4 +10,9 @@ import lombok.Getter;
 public class CreateAccountDTO {
     private Long userId;
     private BigDecimal initialBalance;
+    private String accountType;
+
+    private BigDecimal overdraftLimit;
+    private BigDecimal interestRate;
+    private BigDecimal creditLimit;
 }
