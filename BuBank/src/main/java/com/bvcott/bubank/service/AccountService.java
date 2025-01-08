@@ -1,5 +1,8 @@
 package com.bvcott.bubank.service;
 
+import com.bvcott.bubank.model.account.BusinessAccount;
+import com.bvcott.bubank.model.account.CheckingAccount;
+import com.bvcott.bubank.model.account.SavingsAccount;
 import org.springframework.stereotype.Service;
 
 import com.bvcott.bubank.dto.CreateAccountDTO;
@@ -25,33 +28,56 @@ public class AccountService {
         User user = userRepo.findById(dto.getUserId())
             .orElseThrow(() -> new RuntimeException("User not found.")); 
 
-        String nextAccountNumber = generateNextAccountNumber();
+        String nextAccountNumber = generateNextAccountNumber(dto.getAccountType());
             
-        Account account = new Account(); 
+        Account account;
+        switch(dto.getAccountType().toLowerCase()) {
+            case "checking":
+                CheckingAccount checkingAccount = new CheckingAccount();
+                checkingAccount.setOverdraftLimit(dto.getOverdraftLimit());
+                account = checkingAccount;
+                break;
+            case "savings":
+                SavingsAccount savingsAccount = new SavingsAccount();
+                savingsAccount.setInterestRate(dto.getInterestRate());
+                account = savingsAccount;
+                break;
+            case "business":
+                BusinessAccount businessAccount = new BusinessAccount();
+                businessAccount.setCreditLimit(dto.getCreditLimit());
+                account = businessAccount;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid account type specified.");
+        }
+
         account.setAccountNumber(nextAccountNumber);
         account.setBalance(dto.getInitialBalance());
-
         user.addAccount(account);
-
-        userRepo.save(user);
 
         return account;
     }
 
-    private String generateNextAccountNumber() {
-        Account lastAccount = accountRepo.findTopByOrderByIdDesc();
+    private String generateNextAccountNumber(String accountType) {
+        String prefix = switch (accountType.toLowerCase()) {
+            case "checking" -> "ACC-CHK-";
+            case "savings" -> "ACC-SAV-";
+            case "business" -> "ACC-BUS-";
+            default ->
+                    throw new IllegalArgumentException("Invalid account type specified for account number generation.");
+        };
 
-        if(lastAccount == null || lastAccount.getAccountNumber() == null) {
-            return "ACC-00000001";
+        String lastAccountNumber = accountRepo.findTopByAccountNumberStartingWithOrderByIdDesc(prefix)
+                .map(Account::getAccountNumber)
+                .orElse(null);
+
+        int nextNumber = 1;
+        if(lastAccountNumber != null) {
+            String[] parts = lastAccountNumber.split("-");
+            nextNumber = Integer.parseInt(parts[2]) + 1;
         }
 
-        String lastAccountNumber = lastAccount.getAccountNumber();
-        int lastNumber = Integer.parseInt(lastAccountNumber.split("-")[1]);
-
-        int nextNumber = lastNumber + 1;
-
-        return String.format("ACC-%08d", nextNumber);
-
+        return prefix + String.format("%08d", nextNumber);
     }
     
 }
