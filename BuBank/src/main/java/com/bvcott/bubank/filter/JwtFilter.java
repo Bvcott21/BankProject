@@ -3,6 +3,7 @@ package com.bvcott.bubank.filter;
 import jakarta.servlet.ServletException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.lang.NonNullApi;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,28 +37,33 @@ public class JwtFilter extends OncePerRequestFilter implements ApplicationContex
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain)
-            throws ServletException, IOException, ServletException, IOException {
+            throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Return 401 Unauthorized
+            return;
+        }
 
-            try {
-                String username = jwtUtil.extractUsername(token);
+        String token = authorizationHeader.substring(7);
 
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetailsService userDetailsService = applicationContext.getBean(UserDetailsService.class);
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        try {
+            String username = jwtUtil.extractUsername(token);
 
-                    if (jwtUtil.validateToken(token, userDetails.getUsername())) {
-                        UsernamePasswordAuthenticationToken authenticationToken =
-                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    }
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                // Dynamically retrieve UserDetailsService from the application context
+                UserDetailsService userDetailsService = applicationContext.getBean(UserDetailsService.class);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+                if (jwtUtil.validateToken(token, userDetails.getUsername())) {
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
-            } catch (Exception e) {
-                System.err.println("JWT validation failed: " + e.getMessage());
             }
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Return 401 Unauthorized for any error
+            return;
         }
 
         filterChain.doFilter(request, response);
