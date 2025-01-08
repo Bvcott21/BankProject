@@ -15,6 +15,8 @@ import com.bvcott.bubank.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
+import java.util.List;
+
 @Service
 public class AccountService {
     private final AccountRepository accountRepo;
@@ -63,6 +65,14 @@ public class AccountService {
         userRepo.save(user);
 
         return account;
+    }
+
+    public List<Account> listUserAccounts(String username) {
+        log.info("Finding account for username: {}", username);
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Logged-in user not found."));
+
+        return user.getAccounts();
     }
 
     private String generateNextAccountNumber(String accountType) {
