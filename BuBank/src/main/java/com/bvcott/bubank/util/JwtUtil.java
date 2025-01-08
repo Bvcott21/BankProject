@@ -23,12 +23,13 @@ public class JwtUtil {
     public String generateToken(String username) {
         Instant now = Instant.now();
 
-        return Jwts.builder()
+        String token =  Jwts.builder()
                 .subject(username)                          // Replaces setSubject(...)
                 .issuedAt(Date.from(now))                   // Replaces setIssuedAt(...)
                 .expiration(Date.from(now.plus(10, ChronoUnit.HOURS))) // Replaces setExpiration(...)
                 .signWith(SIGNING_KEY)                      // Let JJWT derive the algorithm
                 .compact();
+        return "Bearer " + token;
     }
 
     public String extractUsername(String token) {
