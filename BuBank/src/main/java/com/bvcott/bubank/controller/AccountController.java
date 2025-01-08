@@ -1,5 +1,6 @@
 package com.bvcott.bubank.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ public class AccountController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createAccount(@RequestBody CreateAccountDTO dto) {
+    public ResponseEntity<?> createAccount(@RequestBody @Valid CreateAccountDTO dto) {
         try {
             Account account = accountService.createAccount(dto);
             return ResponseEntity.ok(account);
