@@ -5,6 +5,7 @@ import com.bvcott.bubank.model.User;
 import com.bvcott.bubank.repository.UserRepository;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,7 +24,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User registerUser(String username, String rawPassword, Role role) {
-        if (userRepository.findByUsername(username) != null) {
+        if (userRepository.findByUsername(username).isPresent()) {
             throw new RuntimeException("Username already exists!");
         }
         String hashedPassword = passwordEncoder.encode(rawPassword);
@@ -32,12 +33,13 @@ public class UserService implements UserDetailsService {
     }
 
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Username not found with the provided username"));
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        User user = findByUsername(username);
 
         if(user == null) {
             throw new UsernameNotFoundException("User not found");
