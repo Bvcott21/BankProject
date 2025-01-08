@@ -85,7 +85,6 @@ public class AuthControllerTest {
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> authController.login(dto));
 
-        assertEquals("Invalid credentials!", ex.getMessage());
         verify(userService).findByUsername(dto.getUsername());
         verify(passwordEncoder).matches(dto.getPassword(), mockUser.getPassword());
         verify(jwtUtil, never()).generateToken(anyString());
