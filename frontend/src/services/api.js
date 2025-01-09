@@ -23,9 +23,14 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        console.error('API error:', error);
+        if (error.response && error.response.status === 401) {
+            console.error('Unauthorized: Redirecting to login.');
+            // Redirect to login page or show a login prompt
+            window.location.href = '/login'; // Adjust path as needed
+        }
+        console.error('API error:', error.response || error.message);
         return Promise.reject(error);
     }
-)
+);
 
 export default api;
