@@ -17,9 +17,18 @@ const Login = () => {
         
         try{
             const response = await authService.login(formData);
-            localStorage.setItem('token', response.data.token);
+            console.log("Login response:", response.data);
+            const token = response.data.token;
+
+            if(token) {
+                localStorage.setItem('token', response.data.token);
+                console.log("Token saved to localStorage:", token);
+            } else {
+                console.error("No token received in response");
+            }
             navigate('/dashboard');
         } catch(err) {
+            console.error("Login Error: ", error.response || error.message);
             setError('Invalid credentials. Please try again');
         }
     };
