@@ -14,7 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Map;
 
 public class AuthControllerTest {
 
@@ -46,10 +49,11 @@ public class AuthControllerTest {
         when(jwtUtil.generateToken(mockUser.getUsername())).thenReturn("mockJwtToken");
 
         // Act
-        String token = authController.login(dto);
+        ResponseEntity<Map<String, String>> response = authController.login(dto);
 
         // Assert
-        assertEquals("mockJwtToken", token);
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("mockJwtToken", response.getBody().get("token"));
         verify(userService).findByUsername(dto.getUsername());
         verify(passwordEncoder).matches(dto.getPassword(), mockUser.getPassword());
         verify(jwtUtil).generateToken(mockUser.getUsername());
