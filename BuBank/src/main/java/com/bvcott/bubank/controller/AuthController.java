@@ -2,6 +2,7 @@ package com.bvcott.bubank.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +14,9 @@ import com.bvcott.bubank.model.Role;
 import com.bvcott.bubank.model.User;
 import com.bvcott.bubank.service.UserService;
 import com.bvcott.bubank.util.JwtUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController @RequestMapping("/api/v1/auth")
 public class AuthController {
@@ -45,10 +49,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginSignupDTO dto) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginSignupDTO dto) {
         log.info("Login triggered with values: {}", dto);
-        log.info("Finding user by username");
-        User user = userService.findByUsername(dto.getUsername());
 
         if (dto.getUsername() == null || dto.getUsername().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be empty.");
@@ -57,14 +59,18 @@ public class AuthController {
             throw new IllegalArgumentException("Password cannot be empty.");
         }
 
-        if(user == null || !passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            log.error("Passwords don't match, throwing exception...");
+        User user = userService.findByUsername(dto.getUsername());
+        if (user == null || !passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            log.error("Invalid credentials!");
             throw new RuntimeException("Invalid credentials!");
         }
-        
+
         String token = jwtUtil.generateToken(user.getUsername());
-        log.info("Password matches, logged in successfully, returning token: {}", token);
-        return token;
+        log.info("Password matches, logged in successfully, returning token.");
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token); // Return only the token without "Bearer"
+        return ResponseEntity.ok(response);
     }
     
 }
