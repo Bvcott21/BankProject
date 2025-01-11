@@ -8,12 +8,13 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity @Table(name = "TRANSACTIONS") @Data @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Transaction {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long transactionId;
 
     @Column(nullable = false)
-    private Long accountId;
+    private String accountNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
