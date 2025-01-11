@@ -15,6 +15,7 @@ import com.bvcott.bubank.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -97,13 +98,67 @@ public class AccountService {
         return prefix + String.format("%08d", nextNumber);
     }
 
+    public void deposit(String accountNumber, BigDecimal amount) {
+        Account account = findAccountByAccountNumber(accountNumber);
+        account.setBalance(account.getBalance().add(amount));
+        accountRepo.save(account);
+    }
+
+    public void withdraw(String accountNumber, BigDecimal amount) {
+        Account account = findAccountByAccountNumber(accountNumber);
+
+        if (account instanceof BusinessAccount) {
+            validateBusinessAccountWithdrawal((BusinessAccount) account, amount);
+        } else if (account instanceof CheckingAccount) {
+            validateCheckingAccountWithdrawal((CheckingAccount) account, amount);
+        } else if (account instanceof SavingsAccount) {
+            validateSavingsAccountWithdrawal((SavingsAccount) account, amount);
+        } else {
+            throw new IllegalArgumentException("Unsupported account type for withdrawal.");
+        }
+
+        account.setBalance(account.getBalance().subtract(amount));
+        accountRepo.save(account);
+    }
+
+    private void validateBusinessAccountWithdrawal(BusinessAccount account, BigDecimal amount) {
+        if (account.getBalance().subtract(amount).compareTo(account.getCreditLimit().negate()) < 0) {
+            throw new RuntimeException("Insufficient funds for Business account. Cannot exceed credit limit of: " +
+                    account.getCreditLimit());
+        }
+    }
+
+    private void validateCheckingAccountWithdrawal(CheckingAccount account, BigDecimal amount) {
+        if(account.getBalance().subtract(amount).compareTo(account.getOverdraftLimit().negate()) < 0) {
+            throw new RuntimeException("Insufficient funds for Checking account. Cannot exceed overdraft limit of: " +
+                    account.getOverdraftLimit());
+        }
+    }
+
+    private void validateSavingsAccountWithdrawal(SavingsAccount account, BigDecimal amount) {
+        if(account.getBalance().subtract(amount).compareTo(BigDecimal.ZERO) < 0) {
+            throw new RuntimeException("Insufficient funds for Savings account. Cannot have negative balance.");
+        }
+    }
+
     public Account findAccountById(Long accountId) {
         return accountRepo.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
     }
 
+    public Account findAccountByAccountNumber(String accountNumber) {
+        return accountRepo.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new RuntimeException("Account not found with the provided account number: " + accountNumber));
+    }
+
     public boolean isOwner(Long accountId, String username) {
         return accountRepo.existsByIdAndUser_Username(accountId, username);
+    }
+
+    public void validateAccountExists(String accountNumber) {
+        if(!accountRepo.existsByAccountNumber(accountNumber)) {
+            throw new RuntimeException("Account not found: " + accountNumber);
+        }
     }
     
 }
