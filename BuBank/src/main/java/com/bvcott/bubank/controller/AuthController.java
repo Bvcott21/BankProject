@@ -65,12 +65,41 @@ public class AuthController {
             throw new RuntimeException("Invalid credentials!");
         }
 
-        String token = jwtUtil.generateToken(user.getUsername());
+        String accessToken = jwtUtil.generateToken(user.getUsername());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getUsername());
+
         log.info("Password matches, logged in successfully, returning token.");
 
         Map<String, String> response = new HashMap<>();
-        response.put("token", token); // Return only the token without "Bearer"
+        response.put("accessToken", accessToken); // Return only the token without "Bearer"
+        response.put("refreshToken", refreshToken);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<Map<String, String>> refreshToken(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Refresh token is missing"));
+        }
+
+        try {
+            String username = jwtUtil.extractUsername(refreshToken);
+            if(!jwtUtil.validateToken(refreshToken, username)) {
+                return ResponseEntity
+                        .status(401)
+                        .body(Map.of("error", "Invalid refresh token"));
+            }
+            String newAccessToken = jwtUtil.generateToken(username);
+            return ResponseEntity
+                    .ok(Map.of("accessToken", newAccessToken));
+
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(401)
+                    .body(Map.of("error", "Failed to refresh token"));
+        }
     }
     
 }

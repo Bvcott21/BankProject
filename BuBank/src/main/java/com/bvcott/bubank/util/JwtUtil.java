@@ -32,6 +32,17 @@ public class JwtUtil {
         return "Bearer " + token;
     }
 
+    public String generateRefreshToken(String username) {
+        Instant now = Instant.now();
+        return Jwts
+                .builder()
+                .subject(username)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plus(7, ChronoUnit.DAYS)))
+                .signWith(SIGNING_KEY)
+                .compact();
+    }
+
     public String extractUsername(String token) {
         return Jwts.parser()
             .verifyWith(SIGNING_KEY)
