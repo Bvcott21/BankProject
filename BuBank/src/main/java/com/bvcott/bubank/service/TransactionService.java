@@ -3,7 +3,9 @@ package com.bvcott.bubank.service;
 import com.bvcott.bubank.dto.TransactionDTO;
 import com.bvcott.bubank.model.transaction.Transaction;
 import com.bvcott.bubank.model.transaction.TransactionType;
+import com.bvcott.bubank.model.transaction.TransferTransaction;
 import com.bvcott.bubank.repository.TransactionRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,12 +21,65 @@ public class TransactionService {
         this.accountService = accountService;
     }
 
+    @Transactional
     public Transaction createTransaction(TransactionDTO dto) {
+        validateTransactionFields(dto);
+
+        switch(dto.getTransactionType()) {
+            case DEPOSIT:
+                return processDeposit(dto);
+            case WITHDRAWAL:
+                return processWithdrawal(dto);
+            case TRANSFER:
+                return processTransfer(dto);
+            default:
+                throw new IllegalArgumentException("Unsupporter transaction type." + dto.getTransactionType());
+        }
+    }
+
+    private void validateTransactionFields(TransactionDTO dto) {
+        if(dto.getTransactionType() == TransactionType.TRANSFER) {
+            if(dto.getReceivingAccountNumber() == null) {
+                throw new IllegalArgumentException("Receiving account ID is required for transfer transactions.");
+            }
+        }
+    }
+
+    private Transaction processDeposit(TransactionDTO dto) {
+        accountService.deposit(dto.getAccountNumber(), BigDecimal.valueOf(dto.getAmount()));
+        Transaction txn = createTransactionEntity(dto);
+        return txnRepo.save(txn);
+    }
+
+    private Transaction processWithdrawal(TransactionDTO dto) {
+        accountService.withdraw(dto.getAccountNumber(), BigDecimal.valueOf(dto.getAmount()));
+        Transaction txn = createTransactionEntity(dto);
+        return txnRepo.save(txn);
+    }
+
+    private TransferTransaction processTransfer(TransactionDTO dto) {
+        accountService.withdraw(dto.getAccountNumber(), BigDecimal.valueOf(dto.getAmount()));
+        accountService.deposit(dto.getReceivingAccountNumber(), BigDecimal.valueOf(dto.getAmount()));
+        TransferTransaction txn = createTransferTransactionEntity(dto);
+        return txnRepo.save(txn);
+    }
+
+    private Transaction createTransactionEntity(TransactionDTO dto) {
         Transaction txn = new Transaction();
-        txn.setAccountId(dto.getAccountId());
+        txn.setAccountNumber(dto.getAccountNumber());
         txn.setTransactionType(dto.getTransactionType());
         txn.setAmount(BigDecimal.valueOf(dto.getAmount()));
         txn.setTimestamp(LocalDateTime.now());
-        return txnRepo.save(txn);
+        return txn;
+    }
+
+    private TransferTransaction createTransferTransactionEntity(TransactionDTO dto) {
+        TransferTransaction txn = new TransferTransaction();
+        txn.setAccountNumber(dto.getAccountNumber());
+        txn.setReceivingAccountNumber(dto.getReceivingAccountNumber());
+        txn.setTransactionType(dto.getTransactionType());
+        txn.setAmount(BigDecimal.valueOf(dto.getAmount()));
+        txn.setTimestamp(LocalDateTime.now());
+        return txn;
     }
 }
