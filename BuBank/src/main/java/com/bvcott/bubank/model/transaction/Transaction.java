@@ -17,6 +17,9 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private TransactionType transactionType;
+
+    @Column(nullable = false)
     private BigDecimal amount;
 
     @Column(nullable = false)
