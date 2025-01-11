@@ -96,5 +96,10 @@ public class AccountService {
 
         return prefix + String.format("%08d", nextNumber);
     }
+
+    public Account findAccountById(Long accountId) {
+        return accountRepo.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+    }
     
 }
