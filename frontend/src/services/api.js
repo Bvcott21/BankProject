@@ -7,15 +7,11 @@ const api = axios.create({
     },
 });
 
-// Adding a request interceptor to include token
 api.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('token'); // Retrieve the token from localStorage
-        console.log("Token in localStorage: ", token);
-        console.log("Request URL: ", config.url);
-        console.log("Request Headers: ", config.headers);
-        if (token) {
-            config.headers.Authorization = `${token}`;
+    async (config) => {
+        const accessToken = localStorage.getItem('accessToken');
+        if (accessToken) {
+            config.headers.Authorization = accessToken;
         }
         return config;
     },
@@ -24,13 +20,28 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
     (response) => response,
-    (error) => {
+    async (error) => {
         if (error.response && error.response.status === 401) {
-            console.error('Unauthorized: Redirecting to login.');
-            // Redirect to login page or show a login prompt
-            window.location.href = '/login'; // Adjust path as needed
+            const refreshToken = localStorage.getItem('refreshToken');
+            if (refreshToken) {
+                try {
+                    const response = await axios.post('http://localhost:8080/api/v1/auth/refresh-token', {
+                        refreshToken,
+                    });
+                    const newAccessToken = response.data.accessToken;
+                    localStorage.setItem('accessToken', newAccessToken);
+                    error.config.headers.Authorization = newAccessToken;
+                    return axios.request(error.config);
+                } catch (refreshError) {
+                    console.error('Refresh token expired or invalid:', refreshError);
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('refreshToken');
+                    window.location.href = '/login';
+                }
+            } else {
+                window.location.href = '/login';
+            }
         }
-        console.error('API error:', error.response || error.message);
         return Promise.reject(error);
     }
 );
