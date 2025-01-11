@@ -9,7 +9,8 @@ import com.bvcott.bubank.model.account.Account;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
     List<Account> findByUser_UserId(Long userId);
-    Account findByAccountNumber(String accountNumber);
+    Optional<Account> findByAccountNumber(String accountNumber);
+    boolean existsByAccountNumber(String accountNumber);
     Account findTopByOrderByIdDesc();
     Optional<Account> findTopByAccountNumberStartingWithOrderByIdDesc(String prefix);
     boolean existsByIdAndUser_Username(Long accountId, String username);
