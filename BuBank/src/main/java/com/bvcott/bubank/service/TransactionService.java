@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class TransactionService {
@@ -81,5 +82,9 @@ public class TransactionService {
         txn.setAmount(BigDecimal.valueOf(dto.getAmount()));
         txn.setTimestamp(LocalDateTime.now());
         return txn;
+    }
+
+    public List<Transaction> getTransactionsByAccountNumber(String accountNumber) {
+        return txnRepo.findByAccountNumber(accountNumber);
     }
 }
