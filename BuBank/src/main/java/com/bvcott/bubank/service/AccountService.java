@@ -101,5 +101,9 @@ public class AccountService {
         return accountRepo.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
     }
+
+    public boolean isOwner(Long accountId, String username) {
+        return accountRepo.existsByIdAndUser_Username(accountId, username);
+    }
     
 }
