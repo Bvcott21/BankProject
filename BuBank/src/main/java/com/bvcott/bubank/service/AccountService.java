@@ -151,8 +151,10 @@ public class AccountService {
                 .orElseThrow(() -> new RuntimeException("Account not found with the provided account number: " + accountNumber));
     }
 
-    public boolean isOwner(Long accountId, String username) {
-        return accountRepo.existsByIdAndUser_Username(accountId, username);
+    public boolean isOwner(String accountNumber, String username) {
+        boolean exists = accountRepo.existsByAccountNumberAndUser_Username(accountNumber, username);
+        log.info("IsOwner Check - Account Number: {}, Username: {}, Exists: {}", accountNumber, username, exists);
+        return exists;
     }
 
     public void validateAccountExists(String accountNumber) {
