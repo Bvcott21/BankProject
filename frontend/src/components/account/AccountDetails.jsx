@@ -31,6 +31,13 @@ const AccountDetails = () => {
         loadAccountDetails();
     }, [accountNumber]);
 
+    const formatTransactionType = (txn) => {
+        if(txn.transactionType === "TRANSFER") {
+            return txn.receivingAccountNumber === accountNumber ? "TRANSFER-IN" : "TRANSFER-OUT";
+        }
+        return txn.transactionType;
+    }
+
     if (loading) {
         return (
             <div className="text-center mt-3">
@@ -101,7 +108,7 @@ const AccountDetails = () => {
                         {transactions.map((txn) => (
                             <tr key={txn.transactionId}>
                                 <td>{txn.transactionId}</td>
-                                <th>{txn.transactionType}</th>
+                                <th>{formatTransactionType(txn)}</th>
                                 <td>{txn.amount.toFixed(2)}</td>
                                 <td>{new Date(txn.timestamp).toLocaleString()}</td>
                                 <td>{txn.receivingAccountNumber || "N/A"}</td>
