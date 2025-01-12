@@ -50,7 +50,7 @@ const CreateTransactionForm = () => {
 
         try {
             await createTransaction(formData);
-            setSuccessMessage("Transaction created successfully!");
+            setSuccessMessage("Transaction created successfully! Redirecting to Dashboard...");
             setTimeout(() => { navigate("/dashboard") }, 2000);
         } catch (e) {
             setErrorMessage(`Error creating transaction: ${e.message}`);
