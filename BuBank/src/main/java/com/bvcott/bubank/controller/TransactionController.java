@@ -2,6 +2,7 @@ package com.bvcott.bubank.controller;
 
 import com.bvcott.bubank.dto.TransactionDTO;
 import com.bvcott.bubank.model.transaction.Transaction;
+import com.bvcott.bubank.model.transaction.TransferTransaction;
 import com.bvcott.bubank.service.TransactionService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController @RequestMapping("/api/v1/transactions")
@@ -33,7 +36,13 @@ public class TransactionController {
 
     @GetMapping("/{accountNumber}")
     public ResponseEntity<List<Transaction>> getTransactionsForAccount(@PathVariable String accountNumber) {
-        List<Transaction> txns = txnService.getTransactionsByAccountNumber(accountNumber);
+        List<Transaction> sentTxns = txnService.getTransactionsByAccountNumber(accountNumber);
+        List<TransferTransaction> receivedTxns = txnService.getTransactionsByReceivingAccountNumber(accountNumber);
+
+        List<Transaction> txns = new ArrayList<>();
+        txns.addAll(sentTxns);
+        txns.addAll(receivedTxns);
+
         return ResponseEntity.ok(txns);
     }
 }
