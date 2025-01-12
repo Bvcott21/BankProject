@@ -106,7 +106,7 @@ public class TransactionService {
         return txnRepo.findByAccountNumber(accountNumber);
     }
 
-    public List<Transaction> getTransactionsByReceivingAccountNumber(String accountNumber) {
+    public List<TransferTransaction> getTransactionsByReceivingAccountNumber(String accountNumber) {
         return txnRepo.findByReceivingAccountNumber(accountNumber);
     }
 }
