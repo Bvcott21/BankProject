@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import CreateAccountPage from "./pages/CreateAccountPage";
 import AccountList from "./components/account/AccountList";
 import AccountDetails from "./components/account/AccountDetails";
+import CreateTransactionForm from "./components/txn/CreateTransactionForm";
 
 function App() {
   return (
@@ -47,6 +48,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+            <Route
+                path="/create-transaction"
+                element={
+                <ProtectedRoute>
+                    <CreateTransactionForm />
+                </ProtectedRoute>
+                }
+            />
         </Routes>
       </div>
     </Router>
