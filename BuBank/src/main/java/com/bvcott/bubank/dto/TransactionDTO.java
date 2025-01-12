@@ -21,6 +21,5 @@ public class TransactionDTO {
     private double amount;
 
     @NotNull(message = "Amount cannot be null")
-    @Positive(message = "Amount must be greater than zero")
     private TransactionType transactionType;
 }
