@@ -13,5 +13,5 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     boolean existsByAccountNumber(String accountNumber);
     Account findTopByOrderByIdDesc();
     Optional<Account> findTopByAccountNumberStartingWithOrderByIdDesc(String prefix);
-    boolean existsByIdAndUser_Username(Long accountId, String username);
+    boolean existsByAccountNumberAndUser_Username(String accountNumber, String username);
 }
