@@ -1,6 +1,7 @@
 import {useState} from "react";
-import {createAccount} from "../services/accountService";
+import {createAccount} from "../../services/accountService";
 import {Alert, Button, Col, Form, Row} from "react-bootstrap";
+import {useNavigate} from "react-router-dom";
 
 const CreateAccountForm = () => {
     const [ formData, setFormData ] = useState({
@@ -12,6 +13,7 @@ const CreateAccountForm = () => {
     });
     const [ successMessage, setSuccessMessage ] = useState('');
     const [ errorMessage, setErrorMessage ] = useState('');
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -24,8 +26,9 @@ const CreateAccountForm = () => {
         setErrorMessage('');
 
         try{
-            const result = await createAccount(formData);
-            setSuccessMessage(`Account created successfully: ${JSON.stringify(result)}`);
+            await createAccount(formData);
+            setSuccessMessage(`Account created successfully! Redirecting to Dashboard...`);
+            setTimeout(() => { navigate("/dashboard") }, 2000);
         } catch (error) {
             setErrorMessage(`Error creating account: ${error.message}`);
         }
