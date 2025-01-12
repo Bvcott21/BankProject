@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class TransactionService {
@@ -102,11 +104,22 @@ public class TransactionService {
         return txn;
     }
 
-    public List<Transaction> getTransactionsByAccountNumber(String accountNumber) {
-        return txnRepo.findByAccountNumber(accountNumber);
-    }
+    public List<Transaction> getTransactionsForAccount(String accountNumber) {
+        // Fetch transactions where the account is the sender (TRANSFER-OUT and others)
+        List<Transaction> sentTransactions = txnRepo.findByAccountNumber(accountNumber)
+                .stream()
+                .filter(txn -> !(txn instanceof TransferTransaction) ||
+                        ((TransferTransaction) txn).getAccountNumber().equals(accountNumber)) // Sender transactions only
+                .toList();
 
-    public List<TransferTransaction> getTransactionsByReceivingAccountNumber(String accountNumber) {
-        return txnRepo.findByReceivingAccountNumber(accountNumber);
+        // Fetch transactions where the account is the receiver (TRANSFER-IN only)
+        List<TransferTransaction> receivedTransactions = txnRepo.findByReceivingAccountNumber(accountNumber)
+                .stream()
+                .filter(txn -> txn.getReceivingAccountNumber().equals(accountNumber)) // Receiver transactions only
+                .toList();
+
+        // Combine both lists
+        return Stream.concat(sentTransactions.stream(), receivedTransactions.stream())
+                .collect(Collectors.toList());
     }
 }

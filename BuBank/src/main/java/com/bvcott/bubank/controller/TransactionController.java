@@ -36,12 +36,7 @@ public class TransactionController {
 
     @GetMapping("/{accountNumber}")
     public ResponseEntity<List<Transaction>> getTransactionsForAccount(@PathVariable String accountNumber) {
-        List<Transaction> sentTxns = txnService.getTransactionsByAccountNumber(accountNumber);
-        List<TransferTransaction> receivedTxns = txnService.getTransactionsByReceivingAccountNumber(accountNumber);
-
-        List<Transaction> txns = new ArrayList<>();
-        txns.addAll(sentTxns);
-        txns.addAll(receivedTxns);
+        List<Transaction> txns = txnService.getTransactionsForAccount(accountNumber);
 
         return ResponseEntity.ok(txns);
     }
