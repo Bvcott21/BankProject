@@ -59,10 +59,28 @@ public class TransactionService {
     }
 
     private TransferTransaction processTransfer(TransactionDTO dto) {
+        // Withdraw from sender's account
         accountService.withdraw(dto.getAccountNumber(), BigDecimal.valueOf(dto.getAmount()));
+
+        // Deposit into receiver's account
         accountService.deposit(dto.getReceivingAccountNumber(), BigDecimal.valueOf(dto.getAmount()));
-        TransferTransaction txn = createTransferTransactionEntity(dto);
-        return txnRepo.save(txn);
+
+        // Create Transaction for sender
+        TransferTransaction senderTxn = createTransferTransactionEntity(dto);
+        senderTxn = txnRepo.save(senderTxn);
+
+        createReceiverTransactionEntity(dto);
+        return senderTxn;
+    }
+
+    private void createReceiverTransactionEntity(TransactionDTO dto) {
+        TransferTransaction txn = new TransferTransaction();
+        txn.setAccountNumber(dto.getReceivingAccountNumber());
+        txn.setTransactionType(TransactionType.TRANSFER);
+        txn.setAmount(BigDecimal.valueOf(dto.getAmount()));
+        txn.setReceivingAccountNumber(dto.getAccountNumber()); // Setting the sender's account number
+        txn.setTimestamp(LocalDateTime.now());
+        txnRepo.save(txn);
     }
 
     private Transaction createTransactionEntity(TransactionDTO dto) {
