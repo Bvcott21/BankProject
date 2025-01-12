@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
-import authService from "../services/authService";
+import authService from "../../services/authService";
 
 const Login = () => {
     const [credentials, setCredentials] = useState({ username: "", password: "" });

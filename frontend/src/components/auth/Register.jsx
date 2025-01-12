@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Form, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import authService from '../services/authService';
+import authService from '../../services/authService';
 
 const Register = () => {
     const [ formData, setFormData ] = useState({username: '', password: ''});
