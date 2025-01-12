@@ -21,7 +21,7 @@ public class TransactionController {
         this.txnService = txnService;
     }
 
-    @PreAuthorize("@accountService.isOwner(#transactionDTO.accountId, authentication.name)")
+    @PreAuthorize("@accountService.isOwner(#transactionDTO.accountNumber, authentication.name)")
     @PostMapping
     public ResponseEntity<?> createTransaction(@RequestBody @Valid TransactionDTO dto) {
         log.info("Creating transaction: {}", dto);
