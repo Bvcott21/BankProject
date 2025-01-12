@@ -1,4 +1,4 @@
-import AccountList from "../components/AccountList";
+import AccountList from "../components/account/AccountList";
 import {useNavigate} from "react-router-dom";
 import {Button} from "react-bootstrap";
 import authService from "../services/authService";
