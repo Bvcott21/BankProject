@@ -1,10 +1,12 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Home from "./pages/Home";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./components/auth/Login";
+import Register from "./components/auth/Register";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import CreateAccountPage from "./pages/CreateAccountPage";
+import AccountList from "./components/account/AccountList";
+import AccountDetails from "./components/account/AccountDetails";
 
 function App() {
   return (
@@ -27,6 +29,21 @@ function App() {
             element={
               <ProtectedRoute>
                   <CreateAccountPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/accounts"
+            element={
+              <ProtectedRoute>
+                  <AccountList />
+              </ProtectedRoute>
+            }/>
+          <Route
+            path="/accounts/:accountNumber"
+            element={
+              <ProtectedRoute>
+                  <AccountDetails />
               </ProtectedRoute>
             }
           />
