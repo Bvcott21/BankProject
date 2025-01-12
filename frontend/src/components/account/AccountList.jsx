@@ -96,12 +96,47 @@ const AccountList = () => {
                         {columns.map((column) => (
                             <td key={column}>
                                 {column === "Actions" ? (
-                                    <Button
-                                        variant="primary"
-                                        onClick={() => navigate(`/accounts/${account.accountNumber}`)}
-                                    >
-                                        View Details
-                                    </Button>
+                                    <>
+                                        <Button
+                                            variant="primary"
+                                            onClick={() => navigate(`/accounts/${account.accountNumber}`)}
+                                            className="me-2"
+                                        >
+                                            View Details
+                                        </Button>
+                                        <Button
+                                            variant="success"
+                                            onClick={() =>
+                                                navigate("/create-transaction", {
+                                                    state: { accountNumber: account.accountNumber, transactionType: "DEPOSIT" },
+                                                })
+                                            }
+                                            className="me-2"
+                                        >
+                                            Deposit
+                                        </Button>
+                                        <Button
+                                            variant="warning"
+                                            onClick={() =>
+                                                navigate("/create-transaction", {
+                                                    state: { accountNumber: account.accountNumber, transactionType: "WITHDRAWAL" },
+                                                })
+                                            }
+                                            className="me-2"
+                                        >
+                                            Withdraw
+                                        </Button>
+                                        <Button
+                                            variant="info"
+                                            onClick={() =>
+                                                navigate("/create-transaction", {
+                                                    state: { accountNumber: account.accountNumber, transactionType: "TRANSFER" },
+                                                })
+                                            }
+                                        >
+                                            Transfer
+                                        </Button>
+                                    </>
                                 ) : (
                                     getAttributeValue(account, column)
                                 )}
