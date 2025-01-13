@@ -32,11 +32,8 @@ const AccountDetails = () => {
     }, [accountNumber]);
 
     const formatTransactionType = (txn) => {
-        if(txn.transactionType === "TRANSFER") {
-            return txn.receivingAccountNumber === accountNumber ? "TRANSFER-IN" : "TRANSFER-OUT";
-        }
         return txn.transactionType;
-    }
+    };
 
     if (loading) {
         return (
@@ -97,7 +94,7 @@ const AccountDetails = () => {
                 <Table striped bordered hover>
                     <thead>
                     <tr>
-                        <th>Transaction ID</th>
+                        <th>Transaction Number</th> {/* Updated */}
                         <th>Type</th>
                         <th>Amount</th>
                         <th>Time</th>
@@ -105,21 +102,20 @@ const AccountDetails = () => {
                     </tr>
                     </thead>
                     <tbody>
-                        {transactions.map((txn) => (
-                            <tr key={txn.transactionId}>
-                                <td>{txn.transactionId}</td>
-                                <th>{formatTransactionType(txn)}</th>
-                                <td>{txn.amount.toFixed(2)}</td>
-                                <td>{new Date(txn.timestamp).toLocaleString()}</td>
-                                <td>{txn.receivingAccountNumber || "N/A"}</td>
-                            </tr>
-                        ))}
+                    {transactions.map((txn) => (
+                        <tr key={txn.transactionNumber}> {/* Updated */}
+                            <td>{txn.transactionNumber}</td> {/* Updated */}
+                            <th>{formatTransactionType(txn)}</th>
+                            <td>{txn.amount.toFixed(2)}</td>
+                            <td>{new Date(txn.timestamp).toLocaleString()}</td>
+                            <td>{txn.receivingAccountNumber || "N/A"}</td>
+                        </tr>
+                    ))}
                     </tbody>
                 </Table>
             )}
         </div>
-    )
-
-}
+    );
+};
 
 export default AccountDetails;

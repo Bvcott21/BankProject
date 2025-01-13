@@ -130,7 +130,7 @@ const AccountList = () => {
                                             variant="info"
                                             onClick={() =>
                                                 navigate("/create-transaction", {
-                                                    state: { accountNumber: account.accountNumber, transactionType: "TRANSFER" },
+                                                    state: { accountNumber: account.accountNumber, transactionType: "TRANSFER_OUT" },
                                                 })
                                             }
                                         >

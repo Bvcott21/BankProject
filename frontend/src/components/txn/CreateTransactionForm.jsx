@@ -8,16 +8,16 @@ const CreateTransactionForm = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [ formData, setFormData ] = useState({
-        accountNumber : location.state?.accountNumber || "",
+    const [formData, setFormData] = useState({
+        accountNumber: location.state?.accountNumber || "",
         transactionType: location.state?.transactionType || "",
         amount: "",
         receivingAccountNumber: "",
         transferToOwnAccount: false
     });
-    const [ accounts, setAccounts ] = useState([]);
-    const [ errorMessage, setErrorMessage ] = useState("");
-    const [ successMessage, setSuccessMessage ] = useState("");
+    const [accounts, setAccounts] = useState([]);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     useEffect(() => {
         const loadAccounts = async () => {
@@ -29,14 +29,13 @@ const CreateTransactionForm = () => {
             }
         };
 
-        if(formData.transactionType === "TRANSFER") {
+        if (formData.transactionType === "TRANSFER_OUT") {
             loadAccounts();
         }
-
     }, [formData.accountNumber, formData.transactionType]);
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const {name, value, type, checked} = e.target;
         setFormData((prev) => ({
             ...prev,
             [name]: type === "checkbox" ? checked : value
@@ -51,7 +50,9 @@ const CreateTransactionForm = () => {
         try {
             await createTransaction(formData);
             setSuccessMessage("Transaction created successfully! Redirecting to Dashboard...");
-            setTimeout(() => { navigate("/dashboard") }, 2000);
+            setTimeout(() => {
+                navigate("/dashboard");
+            }, 2000);
         } catch (e) {
             setErrorMessage(`Error creating transaction: ${e.message}`);
         }
@@ -61,7 +62,7 @@ const CreateTransactionForm = () => {
         <div className="container mt-5">
             <h2>Create {formData.transactionType}</h2>
             {successMessage && <Alert variant="success">{successMessage}</Alert>}
-            {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
+            {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
             <Form onSubmit={handleSubmit}>
 
                 <Form.Group as={Row} className="mb-3" controlId="formAccountNumber">
@@ -89,7 +90,7 @@ const CreateTransactionForm = () => {
                     </Col>
                 </Form.Group>
 
-                {formData.transactionType === "TRANSFER" && (
+                {formData.transactionType === "TRANSFER_OUT" && (
                     <>
                         <Form.Group as={Row} className="mb-3" controlId="formTransferToOwnAccount">
                             <Form.Label>Transfer To Own Account</Form.Label>
@@ -141,7 +142,7 @@ const CreateTransactionForm = () => {
                 )}
 
                 <Form.Group as={Row} className="mb-3">
-                    <Col sm={{ span: 10, offset: 2}}>
+                    <Col sm={{span: 10, offset: 2}}>
                         <Button type="submit" variant="primary">
                             Submit
                         </Button>
@@ -149,7 +150,7 @@ const CreateTransactionForm = () => {
                 </Form.Group>
             </Form>
         </div>
-    )
-}
+    );
+};
 
 export default CreateTransactionForm;
