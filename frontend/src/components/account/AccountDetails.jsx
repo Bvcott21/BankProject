@@ -98,17 +98,20 @@ const AccountDetails = () => {
                         <th>Type</th>
                         <th>Amount</th>
                         <th>Time</th>
-                        <th>Receiving Account</th>
+                        <th>Sender</th>
+                        <th>Receiver</th>
                     </tr>
                     </thead>
                     <tbody>
                     {transactions.map((txn) => (
                         <tr key={txn.transactionNumber}> {/* Updated */}
-                            <td>{txn.transactionNumber}</td> {/* Updated */}
+                            <td>{txn.transactionNumber}</td>
+                            {/* Updated */}
                             <th>{formatTransactionType(txn)}</th>
                             <td>{txn.amount.toFixed(2)}</td>
                             <td>{new Date(txn.timestamp).toLocaleString()}</td>
-                            <td>{txn.receivingAccountNumber || "N/A"}</td>
+                            <td>{txn.transferDirection === "RECEIVER" ? txn.senderAccountNumber : "N/A"}</td>
+                            <td>{txn.transferDirection === "SENDER" ? txn.receivingAccountNumber : "N/A"}</td>
                         </tr>
                     ))}
                     </tbody>

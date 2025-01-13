@@ -29,7 +29,7 @@ const CreateTransactionForm = () => {
             }
         };
 
-        if (formData.transactionType === "TRANSFER_OUT") {
+        if (formData.transactionType === "TRANSFER") {
             loadAccounts();
         }
     }, [formData.accountNumber, formData.transactionType]);
@@ -90,7 +90,7 @@ const CreateTransactionForm = () => {
                     </Col>
                 </Form.Group>
 
-                {formData.transactionType === "TRANSFER_OUT" && (
+                {formData.transactionType === "TRANSFER" && (
                     <>
                         <Form.Group as={Row} className="mb-3" controlId="formTransferToOwnAccount">
                             <Form.Label>Transfer To Own Account</Form.Label>
