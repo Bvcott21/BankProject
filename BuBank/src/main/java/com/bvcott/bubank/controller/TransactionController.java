@@ -2,7 +2,6 @@ package com.bvcott.bubank.controller;
 
 import com.bvcott.bubank.dto.TransactionDTO;
 import com.bvcott.bubank.model.transaction.Transaction;
-import com.bvcott.bubank.model.transaction.TransferTransaction;
 import com.bvcott.bubank.service.TransactionService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -11,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @RestController @RequestMapping("/api/v1/transactions")
