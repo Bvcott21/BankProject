@@ -14,6 +14,9 @@ public class Transaction {
     private Long transactionId;
 
     @Column(nullable = false)
+    private String transactionNumber;
+
+    @Column(nullable = false)
     private String accountNumber;
 
     @Enumerated(EnumType.STRING)
