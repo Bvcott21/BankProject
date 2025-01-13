@@ -7,9 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     List<Transaction> findByAccountNumber(String accountNumber);
     @Query("SELECT t FROM TransferTransaction t WHERE t.receivingAccountNumber = :receivingAccountNumber")
     List<TransferTransaction> findByReceivingAccountNumber(@Param("receivingAccountNumber") String receivingAccountNumber);
+    Optional<Transaction> findTopByOrderByTransactionIdDesc();
 }
