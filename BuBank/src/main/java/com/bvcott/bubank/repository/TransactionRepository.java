@@ -1,7 +1,7 @@
 package com.bvcott.bubank.repository;
 
 import com.bvcott.bubank.model.transaction.Transaction;
-import com.bvcott.bubank.model.transaction.TransferTransaction;
+import com.bvcott.bubank.model.transaction.transfer.TransferTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
