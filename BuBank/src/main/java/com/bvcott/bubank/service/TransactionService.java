@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -95,22 +97,21 @@ public class TransactionService {
 
     private TransferTransaction createReceiverTransactionEntity(TransactionDTO dto, String transactionNumber, Long senderTransactionId) {
         TransferTransaction txn = new TransferTransaction();
-
-        // Receiver's account perspective
-        txn.setAccountNumber(dto.getReceivingAccountNumber()); // The receiver's account number
-        txn.setTransactionNumber(transactionNumber); // Shared transaction number between sender and receiver
+        txn.setAccountNumber(dto.getReceivingAccountNumber()); // Receiver's account
+        txn.setTransactionNumber(transactionNumber); // Shared transaction number
         txn.setTransactionType(TransactionType.TRANSFER); // Transaction type remains TRANSFER
-        txn.setAmount(BigDecimal.valueOf(dto.getAmount())); // Transfer amount
+        txn.setAmount(BigDecimal.valueOf(dto.getAmount())); // Set the transfer amount
         txn.setTimestamp(LocalDateTime.now()); // Current timestamp
-        txn.setTransferDirection(TransferDirection.RECEIVER); // Indicate this is a receiver transaction
+        txn.setTransferDirection(TransferDirection.RECEIVER); // Explicitly set as RECEIVER
+        txn.setLinkedTransactionId(senderTransactionId); // Link back to the sender's transaction
+        txn.setSenderAccountNumber(dto.getAccountNumber()); // Set the sender's account correctly
+        txn.setReceivingAccountNumber(dto.getReceivingAccountNumber()); // Set the receiver's account correctly
 
-        // Link to sender's transaction
-        txn.setLinkedTransactionId(senderTransactionId); // Linked to sender transaction by ID
+        log.info("Creating Receiver Transaction for Transfer: AccountNumber={}, ReceivingAccountNumber={}, SenderAccountNumber={}",
+                dto.getReceivingAccountNumber(), dto.getReceivingAccountNumber(), dto.getAccountNumber());
 
-        // Optional: Include sender's account number for display purposes
-        txn.setSenderAccountNumber(dto.getAccountNumber()); // Sender's account number explicitly set
-
-        return txnRepo.save(txn); // Save receiver transaction
+        log.info("Receiver Transaction Finalized: {}", txn);
+        return txnRepo.save(txn);
     }
 
     private Transaction createTransactionEntity(TransactionDTO dto, String transactionNumber) {
@@ -157,39 +158,28 @@ public class TransactionService {
 
     public List<Transaction> getTransactionsForAccount(String accountNumber) {
         // Fetch sender transactions
-        List<Transaction> senderTransactions = txnRepo.findByAccountNumber(accountNumber)
-                .stream()
-                .filter(txn -> {
-                    if (txn instanceof TransferTransaction transferTxn) {
-                        return transferTxn.getTransferDirection() == TransferDirection.SENDER &&
-                                transferTxn.getLinkedTransactionId() != null;
-                    }
-                    return true; // Include non-transfer transactions
-                })
-                .collect(Collectors.toList());
+        log.info("Fetching transactions where account {} is the sender...", accountNumber);
+        List<TransferTransaction> senderTransactions = txnRepo.findByAccountAndDirection(accountNumber, TransferDirection.SENDER);
 
-        // Fetch receiver transactions
-        List<TransferTransaction> receiverTransactions = txnRepo.findByReceivingAccountNumber(accountNumber)
+        // Fetch receiver transactions and populate senderAccountNumber
+        log.info("Fetching transactions where account {} is the receiver...", accountNumber);
+        List<TransferTransaction> receiverTransactions = txnRepo.findByAccountAndDirection(accountNumber, TransferDirection.RECEIVER)
                 .stream()
                 .peek(transferTxn -> {
-                    // Fetch sender transaction using linkedTransactionId
-                    Optional<Transaction> linkedSenderTxn = txnRepo.findById(transferTxn.getLinkedTransactionId());
-                    if (linkedSenderTxn.isPresent()) {
-                        Transaction senderTxn = linkedSenderTxn.get();
-                        transferTxn.setSenderAccountNumber(senderTxn.getAccountNumber());
-                        log.info("Linked Sender Transaction Found: {}", senderTxn);
-                    } else {
-                        log.warn("No Sender Transaction Found for Linked ID: {}", transferTxn.getLinkedTransactionId());
+                    if (transferTxn.getLinkedTransactionId() != null) {
+                        txnRepo.findById(transferTxn.getLinkedTransactionId())
+                                .ifPresent(linkedTxn -> transferTxn.setSenderAccountNumber(linkedTxn.getAccountNumber()));
                     }
                 })
                 .collect(Collectors.toList());
 
-        // Combine transactions
+        // Combine sender and receiver transactions
+        log.info("Combining sender and receiver transactions...");
         List<Transaction> allTransactions = Stream.concat(senderTransactions.stream(), receiverTransactions.stream())
-                .sorted((txn1, txn2) -> txn2.getTimestamp().compareTo(txn1.getTimestamp())) // Sort by timestamp
+                .sorted(Comparator.comparing(Transaction::getTimestamp).reversed()) // Sort by timestamp (desc)
                 .collect(Collectors.toList());
 
-        log.info("Filtered Transactions for account {}: {}", accountNumber, allTransactions);
+        log.info("Returning {} transactions for account {}", allTransactions.size(), accountNumber);
         return allTransactions;
     }
 }
