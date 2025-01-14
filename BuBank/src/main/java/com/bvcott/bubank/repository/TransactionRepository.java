@@ -1,6 +1,7 @@
 package com.bvcott.bubank.repository;
 
 import com.bvcott.bubank.model.transaction.Transaction;
+import com.bvcott.bubank.model.transaction.transfer.TransferDirection;
 import com.bvcott.bubank.model.transaction.transfer.TransferTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +15,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("SELECT t FROM TransferTransaction t WHERE t.receivingAccountNumber = :receivingAccountNumber")
     List<TransferTransaction> findByReceivingAccountNumber(@Param("receivingAccountNumber") String receivingAccountNumber);
     Optional<Transaction> findTopByOrderByTransactionIdDesc();
+    @Query("SELECT t FROM TransferTransaction t WHERE t.accountNumber = :accountNumber AND t.transferDirection = :transferDirection")
+    List<TransferTransaction> findByAccountAndDirection(
+            @Param("accountNumber") String accountNumber,
+            @Param("transferDirection") TransferDirection transferDirection);
 }
