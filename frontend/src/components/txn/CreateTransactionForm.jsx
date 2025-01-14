@@ -48,6 +48,7 @@ const CreateTransactionForm = () => {
         setErrorMessage("");
 
         try {
+            console.log(formData);
             await createTransaction(formData);
             setSuccessMessage("Transaction created successfully! Redirecting to Dashboard...");
             setTimeout(() => {
