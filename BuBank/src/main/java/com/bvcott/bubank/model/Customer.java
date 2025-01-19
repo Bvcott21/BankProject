@@ -18,13 +18,13 @@ public class Customer {
 
     public void addAccount(Account account) {
         this.accounts.add(account);
-        account.setUser(this);
+        account.setCustomer(this);
     }
 
     public void removeAccount(Account account) {
         if (accounts.contains(account)) {
             accounts.remove(account);
-            account.setUser(null);
+            account.setCustomer(null);
         }
     }
 }
