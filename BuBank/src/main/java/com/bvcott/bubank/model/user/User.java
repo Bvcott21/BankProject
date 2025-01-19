@@ -1,10 +1,4 @@
-package com.bvcott.bubank.model;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.bvcott.bubank.model.account.Account;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+package com.bvcott.bubank.model.user;
 
 import jakarta.persistence.*;
 import lombok.Data;

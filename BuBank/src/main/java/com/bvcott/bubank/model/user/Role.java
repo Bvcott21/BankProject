@@ -1,4 +1,4 @@
-package com.bvcott.bubank.model;
+package com.bvcott.bubank.model.user;
 
 public enum Role {
     ROLE_USER,

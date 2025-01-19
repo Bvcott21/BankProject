@@ -1,4 +1,4 @@
-package com.bvcott.bubank.model;
+package com.bvcott.bubank.model.user;
 
 import com.bvcott.bubank.model.account.Account;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity @Table(name = "CUSTOMER_USER")
-public class Customer {
+public class Customer extends User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Account> accounts = new ArrayList<>();
