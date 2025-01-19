@@ -1,5 +1,6 @@
 package com.bvcott.bubank.service;
 
+import com.bvcott.bubank.model.user.Customer;
 import com.bvcott.bubank.model.account.BusinessAccount;
 import com.bvcott.bubank.model.account.CheckingAccount;
 import com.bvcott.bubank.model.account.SavingsAccount;
@@ -9,9 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.bvcott.bubank.dto.CreateAccountDTO;
 import com.bvcott.bubank.model.account.Account;
-import com.bvcott.bubank.model.User;
+import com.bvcott.bubank.model.user.User;
 import com.bvcott.bubank.repository.AccountRepository;
-import com.bvcott.bubank.repository.UserRepository;
+import com.bvcott.bubank.repository.user.UserRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -34,6 +35,10 @@ public class AccountService {
         log.info("Create account triggered with values: dto - {}, username: {}", dto, username);
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Logged-in user not found."));
+
+        if(user instanceof Customer) {
+
+        }
 
         log.info("User found, creating account...");
         String nextAccountNumber = generateNextAccountNumber(dto.getAccountType());

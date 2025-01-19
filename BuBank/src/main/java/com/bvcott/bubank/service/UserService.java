@@ -1,11 +1,10 @@
 package com.bvcott.bubank.service;
 
-import com.bvcott.bubank.model.Role;
-import com.bvcott.bubank.model.User;
-import com.bvcott.bubank.repository.UserRepository;
+import com.bvcott.bubank.model.user.Role;
+import com.bvcott.bubank.model.user.User;
+import com.bvcott.bubank.repository.user.UserRepository;
 
 import java.util.Collections;
-import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

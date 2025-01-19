@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.bvcott.bubank.dto.CreateAccountDTO;
-import com.bvcott.bubank.model.User;
+import com.bvcott.bubank.model.user.User;
 import com.bvcott.bubank.model.account.Account;
 import com.bvcott.bubank.model.account.CheckingAccount;
 import com.bvcott.bubank.model.account.SavingsAccount;
 import com.bvcott.bubank.repository.AccountRepository;
-import com.bvcott.bubank.repository.UserRepository;
+import com.bvcott.bubank.repository.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

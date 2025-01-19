@@ -2,8 +2,7 @@ package com.bvcott.bubank.model.account;
 
 import java.math.BigDecimal;
 
-import com.bvcott.bubank.model.Customer;
-import com.bvcott.bubank.model.User;
+import com.bvcott.bubank.model.user.Customer;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;

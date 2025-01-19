@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import com.bvcott.bubank.dto.LoginSignupDTO;
-import com.bvcott.bubank.model.Role;
-import com.bvcott.bubank.model.User;
+import com.bvcott.bubank.model.user.Role;
+import com.bvcott.bubank.model.user.User;
 import com.bvcott.bubank.service.UserService;
 import com.bvcott.bubank.util.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
