@@ -1,9 +1,10 @@
 package com.bvcott.bubank.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class CreateAccountRequestDTO {
-    private Long userId;
+    @NotBlank
     private String accountType;
 }
