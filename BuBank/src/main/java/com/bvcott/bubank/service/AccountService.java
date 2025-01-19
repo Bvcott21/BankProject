@@ -80,8 +80,15 @@ public class AccountService {
         log.info("Finding account for username: {}", username);
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Logged-in user not found."));
+        Customer customer;
 
-        return user.getAccounts();
+        if(user instanceof Customer) {
+            customer = (Customer) user;
+        } else {
+            throw new RuntimeException("Only customers have associated accounts");
+        }
+
+        return customer.getAccounts();
     }
 
     private String generateNextAccountNumber(String accountType) {
