@@ -1,4 +1,4 @@
-package com.bvcott.bubank.repository;
+package com.bvcott.bubank.repository.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
