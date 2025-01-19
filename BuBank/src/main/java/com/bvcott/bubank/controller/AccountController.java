@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import com.bvcott.bubank.dto.CreateAccountDTO;
 import com.bvcott.bubank.model.account.Account;
 import com.bvcott.bubank.service.AccountService;
 

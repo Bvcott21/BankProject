@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bvcott.bubank.dto.LoginSignupDTO;
-import com.bvcott.bubank.model.user.Role;
 import com.bvcott.bubank.model.user.User;
 import com.bvcott.bubank.service.UserService;
 import com.bvcott.bubank.util.JwtUtil;
