@@ -5,11 +5,7 @@ import {useNavigate} from "react-router-dom";
 
 const CreateAccountForm = () => {
     const [ formData, setFormData ] = useState({
-        accountType: '',
-        initialBalance: '',
-        overdraftLimit: '',
-        interestRate: '',
-        creditLimit: ''
+        accountType: ''
     });
     const [ successMessage, setSuccessMessage ] = useState('');
     const [ errorMessage, setErrorMessage ] = useState('');
@@ -27,7 +23,7 @@ const CreateAccountForm = () => {
 
         try{
             await createAccount(formData);
-            setSuccessMessage(`Account created successfully! Redirecting to Dashboard...`);
+            setSuccessMessage(`Account creation request submitted successfully! Redirecting to Dashboard...`);
             setTimeout(() => { navigate("/dashboard") }, 2000);
         } catch (error) {
             setErrorMessage(`Error creating account: ${error.message}`);
@@ -56,64 +52,10 @@ const CreateAccountForm = () => {
                         </Form.Select>
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} className="mb-3" controlId="formInitialBalance">
-                    <Form.Label column sm="2">Initial Balance</Form.Label>
-                    <Col sm="10">
-                        <Form.Control
-                            type="number"
-                            name="initialBalance"
-                            placeholder="Enter Initial Balance"
-                            value={formData.initialBalance}
-                            onChange={handleChange}
-                            required
-                        />
-                    </Col>
-                </Form.Group>
-                {formData.accountType === "checking" && (
-                    <Form.Group as={Row} className="mb-3" controlId="formOverdraftLimit">
-                        <Form.Label column sm="2">Overdraft Limit</Form.Label>
-                        <Col sm="10">
-                            <Form.Control
-                                type="number"
-                                name="overdraftLimit"
-                                placeholder="Enter Overdraft Limit"
-                                value={formData.overdraftLimit}
-                                onChange={handleChange}
-                            />
-                        </Col>
-                    </Form.Group>
-                )}
-                {formData.accountType === "savings" && (
-                    <Form.Group as={Row} className="mb-3" controlId="formInterestRate">
-                        <Form.Label column sm="2">Interest Rate</Form.Label>
-                        <Col sm="10">
-                            <Form.Control
-                                type="number"
-                                name="interestRate"
-                                placeholder="Enter Interest Rate"
-                                value={formData.interestRate}
-                                onChange={handleChange}
-                            />
-                        </Col>
-                    </Form.Group>
-                )}
-                {formData.accountType === "business" && (
-                    <Form.Group as={Row} className="mb-3" controlId="formCreditLimit">
-                        <Form.Label column sm="2">Credit Limit</Form.Label>
-                        <Col sm="10">
-                            <Form.Control
-                                type="number"
-                                name="creditLimit"
-                                placeholder="Enter Credit Limit"
-                                value={formData.creditLimit}
-                                onChange={handleChange}
-                            />
-                        </Col>
-                    </Form.Group>
-                )}
+
                 <Form.Group as={Row} className="mb-3">
                     <Col sm={{ span: 10, offset: 2 }}>
-                        <Button type="submit" variant="primary">Create Account</Button>
+                        <Button type="submit" variant="primary">Apply</Button>
                     </Col>
                 </Form.Group>
             </Form>
