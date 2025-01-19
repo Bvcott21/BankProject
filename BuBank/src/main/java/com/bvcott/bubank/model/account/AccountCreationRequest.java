@@ -17,6 +17,6 @@ public class AccountCreationRequest {
     private String accountType;
 
     @Column(nullable = false)
-    private String customer
+    private String customer;
 
 }
