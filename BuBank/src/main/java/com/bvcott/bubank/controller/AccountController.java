@@ -48,7 +48,7 @@ public class AccountController {
                     .getAuthentication()
                     .getName();
             log.info("username: {}", username);
-            List<Account> accounts = accountService.listUserAccounts(username);
+            List<Account> accounts = accountService.listAccounts(username);
             return ResponseEntity.ok(accounts);
         } catch(RuntimeException ex) {
             return ResponseEntity.status(500).body(ex.getMessage());
