@@ -3,9 +3,8 @@ package com.bvcott.bubank.model.user;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Entity @Table(name = "ADMIN_USER") @Data
+@Entity @Table(name = "ADMIN_USER")
 public class Admin extends User {
     public Admin() {
         super();
