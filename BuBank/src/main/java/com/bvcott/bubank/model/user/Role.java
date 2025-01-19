@@ -1,6 +1,6 @@
 package com.bvcott.bubank.model.user;
 
 public enum Role {
-    ROLE_USER,
+    ROLE_CUSTOMER,
     ROLE_ADMIN
 }
