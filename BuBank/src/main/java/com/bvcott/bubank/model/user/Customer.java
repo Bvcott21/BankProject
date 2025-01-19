@@ -6,11 +6,12 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity @Table(name = "CUSTOMER_USER")
+@Entity @Table(name = "CUSTOMER_USER") @Data
 public class Customer extends User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
