@@ -23,7 +23,7 @@ public class Account {
     private BigDecimal balance;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CUSTOMER_ID", nullable = false)
+    @JoinColumn(name = "USER_ID", nullable = false)
     @JsonBackReference
     private Customer customer;
 }
