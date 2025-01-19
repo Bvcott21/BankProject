@@ -23,7 +23,7 @@ public class AuthController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     
     public AuthController(UserService userService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
         this.userService = userService;
@@ -42,7 +42,7 @@ public class AuthController {
             throw new IllegalArgumentException("Password cannot be empty.");
         }
         
-        User user = userService.registerUser(dto.getUsername(), dto.getPassword(), Role.ROLE_USER);
+        User user = userService.registerCustomer(dto.getUsername(), dto.getPassword());
 
         log.info("Registered user: {}", user);
         return "User registered successfully!";
