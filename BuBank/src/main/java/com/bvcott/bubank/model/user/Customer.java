@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity @Table(name = "CUSTOMER_USER") @Data
 public class Customer extends User {
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Account> accounts = new ArrayList<>();
 
