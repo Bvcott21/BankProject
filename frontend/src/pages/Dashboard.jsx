@@ -16,9 +16,9 @@ const Dashboard = () => {
         <div className="mt-3 d-flex gap-3">
             <Button
                 variant="primary"
-                onClick={() => navigate("/create-account")}
+                onClick={() => navigate("/apply-to-account")}
             >
-                Create Account
+                Apply to a New Account
             </Button>
             <Button
             variant="primary"
