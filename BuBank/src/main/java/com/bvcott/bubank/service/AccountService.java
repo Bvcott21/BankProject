@@ -36,8 +36,11 @@ public class AccountService {
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Logged-in user not found."));
 
+        Customer customer;
         if(user instanceof Customer) {
-
+            customer = (Customer) user;
+        } else {
+            throw new RuntimeException("Only Customers can have associated accounts");
         }
 
         log.info("User found, creating account...");
@@ -66,14 +69,14 @@ public class AccountService {
 
         account.setAccountNumber(nextAccountNumber);
         account.setBalance(dto.getInitialBalance());
-        user.addAccount(account);
+        customer.addAccount(account);
 
         userRepo.save(user);
 
         return account;
     }
 
-    public List<Account> listUserAccounts(String username) {
+    public List<Account> listAccounts(String username) {
         log.info("Finding account for username: {}", username);
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Logged-in user not found."));
