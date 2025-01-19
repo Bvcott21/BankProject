@@ -1,9 +1,13 @@
 package com.bvcott.bubank.service;
 
+import com.bvcott.bubank.dto.CreateAccountRequestDTO;
+import com.bvcott.bubank.model.account.creationrequest.AccountCreationRequest;
 import com.bvcott.bubank.model.user.Customer;
 import com.bvcott.bubank.model.account.BusinessAccount;
 import com.bvcott.bubank.model.account.CheckingAccount;
 import com.bvcott.bubank.model.account.SavingsAccount;
+import com.bvcott.bubank.repository.account.creationrequest.AccountCreationRequestRepository;
+import com.bvcott.bubank.repository.user.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,11 +27,31 @@ import java.util.List;
 public class AccountService {
     private final AccountRepository accountRepo;
     private final UserRepository userRepo;
+    private final AccountCreationRequestRepository requestRepo;
+    private final CustomerRepository customerRepo;
     private static final Logger log = LoggerFactory.getLogger(AccountService.class);
     
-    public AccountService(AccountRepository accountRepo, UserRepository userRepo) {
+    public AccountService(AccountRepository accountRepo,
+                          UserRepository userRepo,
+                          AccountCreationRequestRepository requestRepo,
+                          CustomerRepository customerRepo) {
         this.accountRepo = accountRepo;
         this.userRepo = userRepo;
+        this.requestRepo = requestRepo;
+        this.customerRepo = customerRepo;
+    }
+
+    public AccountCreationRequest createAccountRequest(CreateAccountRequestDTO dto, String username) {
+        Customer customer = customerRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Customer not found for username: " + username));
+
+        AccountCreationRequest request = new AccountCreationRequest();
+        request.setAccountType(dto.getAccountType());
+        request.setRequestedBy(customer);
+
+        request = requestRepo.save(request);
+        log.info("Account creation request succesfully created with details: " + request);
+        return request;
     }
 
     @Transactional
