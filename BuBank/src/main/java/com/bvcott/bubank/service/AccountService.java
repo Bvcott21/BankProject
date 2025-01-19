@@ -167,7 +167,7 @@ public class AccountService {
     }
 
     public boolean isOwner(String accountNumber, String username) {
-        boolean exists = accountRepo.existsByAccountNumberAndUser_Username(accountNumber, username);
+        boolean exists = accountRepo.existsByAccountNumberAndCustomer_Username(accountNumber, username);
         log.info("IsOwner Check - Account Number: {}, Username: {}, Exists: {}", accountNumber, username, exists);
         return exists;
     }
