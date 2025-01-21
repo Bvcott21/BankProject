@@ -34,8 +34,8 @@ public class SecurityConfig {
                     .requestMatchers("/api/v1/accounts/**").authenticated()
                     .requestMatchers("/api/v1/transactions").authenticated()
                     .requestMatchers("/api/v1/transactions/**").authenticated()
-                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN").anyRequest().authenticated()
-                    .requestMatchers("/api/v1/account-requests").hasRole("ADMIN").anyRequest().authenticated()
+                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/api/v1/account-requests").hasRole("ADMIN")
                 .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
