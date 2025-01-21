@@ -25,7 +25,7 @@ function App() {
           <Route
             path="/dashboard"
             element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredRole="ROLE_CUSTOMER" >
                     <Dashboard />
                 </ProtectedRoute>
             }
@@ -34,7 +34,7 @@ function App() {
             path="/apply-to-account"
             element={
               <ProtectedRoute>
-                  <CreateAccountPage />
+                  <CreateAccountPage requiredRole="ROLE_CUSTOMER"/>
               </ProtectedRoute>
             }
           />
@@ -42,21 +42,21 @@ function App() {
             path="/accounts"
             element={
               <ProtectedRoute>
-                  <AccountList />
+                  <AccountList requiredRole="ROLE_CUSTOMER"/>
               </ProtectedRoute>
             }/>
           <Route
             path="/accounts/:accountNumber"
             element={
               <ProtectedRoute>
-                  <AccountDetails />
+                  <AccountDetails requiredRole="ROLE_CUSTOMER"/>
               </ProtectedRoute>
             }
           />
             <Route
                 path="/create-transaction"
                 element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredRole="ROLE_CUSTOMER">
                     <CreateTransactionForm />
                 </ProtectedRoute>
                 }
@@ -65,7 +65,7 @@ function App() {
             <Route
                 path="/admin/dashboard"
                 element={
-                <ProtectedRoute requiredRole="admin">
+                <ProtectedRoute requiredRole="ROLE_ADMIN">
                     <AdminDashboard />
                 </ProtectedRoute>
                 }
