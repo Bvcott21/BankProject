@@ -1,5 +1,6 @@
 package com.bvcott.bubank.controller.account.creationrequest;
 
+import com.bvcott.bubank.dto.account.creationrequest.AccountCreationRequestDTO;
 import com.bvcott.bubank.model.account.creationrequest.AccountCreationRequest;
 import com.bvcott.bubank.service.account.creationrequest.AccountCreationRequestService;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController @RequestMapping("/api/v1/account-requests")
 public class AccountCreationRequestController {
@@ -20,8 +22,11 @@ public class AccountCreationRequestController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<AccountCreationRequest>> getAllAccountRequests() {
+    public ResponseEntity<List<AccountCreationRequestDTO>> getAllAccountRequests() {
         List<AccountCreationRequest> requests = requestService.getAllRequests();
-        return ResponseEntity.ok(requests);
+        List<AccountCreationRequestDTO> dtos = requests.stream()
+                .map(AccountCreationRequestDTO::new)
+                .collect(Collectors.toUnmodifiableList());
+        return ResponseEntity.ok(dtos);
     }
 }
