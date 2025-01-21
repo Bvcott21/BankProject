@@ -72,6 +72,8 @@ public class AuthController {
         Map<String, String> response = new HashMap<>();
         response.put("accessToken", accessToken); // Return only the token without "Bearer"
         response.put("refreshToken", refreshToken);
+        response.put("username", user.getUsername());
+        response.put("role", user.getRole().toString());
         return ResponseEntity.ok(response);
     }
 
