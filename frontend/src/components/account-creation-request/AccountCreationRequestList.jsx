@@ -42,15 +42,17 @@ const AccountCreationRequestList = () => {
             case "Account Type":
                 return accountCreationRequest.accountType.toUpperCase();
             case "Requested By":
-                return accountCreationRequest.requestedBy.username;
+                return accountCreationRequest.requestedByUsername;
             case "Status":
                 return accountCreationRequest.status;
             case "Requested At":
                 return new Date(accountCreationRequest.createdAt).toLocaleString();
             case "Reviewed By":
-                return accountCreationRequest.reviewedBy.username || "NOT YET REVIEWED";
+                return accountCreationRequest.reviewedByUsername || "Not yet reviewed";
             case "Reviewed At":
-                return new Date(accountCreationRequest.reviewedAt).toLocaleString() || "NOT YET REVIEWED";
+                return accountCreationRequest.reviewedAt
+                    ? new Date(accountCreationRequest.reviewedAt).toLocaleString()
+                    : "Not yet reviewed";
             default:
                 return "N/A";
         }
@@ -86,7 +88,7 @@ const AccountCreationRequestList = () => {
                     <tr key={accountCreationRequest.requestId}>
                         {columns.map((column) => (
                             <td key={column}>
-                                getAttributeValue(accountCreationRequest, column)
+                                {getAttributeValue(accountCreationRequest, column)}
                             </td>
                         ))}
                     </tr>
