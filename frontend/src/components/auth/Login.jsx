@@ -21,8 +21,8 @@ const Login = () => {
             const role = userData.role;
 
             localStorage.setItem("user", JSON.stringify(userData));
-
-            if (role === "admin") {
+            console.log("User logged in: ", userData);
+            if (role === "ROLE_ADMIN") {
                 window.location.href = "/admin/dashboard";
             } else {
                 window.location.href = "/dashboard"; // Redirect on success
