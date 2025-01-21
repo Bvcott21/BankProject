@@ -19,7 +19,7 @@ public class AccountCreationRequestController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<AccountCreationRequest>> getAllAccountRequests() {
         List<AccountCreationRequest> requests = requestService.getAllRequests();
         return ResponseEntity.ok(requests);
