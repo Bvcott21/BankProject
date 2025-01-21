@@ -8,15 +8,20 @@ import CreateAccountPage from "./pages/CreateAccountPage";
 import AccountList from "./components/account/AccountList";
 import AccountDetails from "./components/account/AccountDetails";
 import CreateTransactionForm from "./components/txn/CreateTransactionForm";
+import AdminDashboard from "./pages/AdminDashboard";
+import Unauthorized from "./pages/Unauthorized";
 
 function App() {
   return (
     <Router>
       <div className="container mt-4">
         <Routes>
+            {/*Public routes*/}
           <Route path="/" element={<Home />}/>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+            {/*Authenticated customer routes*/}
           <Route
             path="/dashboard"
             element={
@@ -53,6 +58,15 @@ function App() {
                 element={
                 <ProtectedRoute>
                     <CreateTransactionForm />
+                </ProtectedRoute>
+                }
+            />
+            {/*Authenticated admin routes*/}
+            <Route
+                path="/admin/dashboard"
+                element={
+                <ProtectedRoute requiredRole="admin">
+                    <AdminDashboard />
                 </ProtectedRoute>
                 }
             />
