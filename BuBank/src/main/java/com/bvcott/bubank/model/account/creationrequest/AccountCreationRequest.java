@@ -36,8 +36,12 @@ public class AccountCreationRequest {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    private LocalDateTime reviewedAt;
+    private LocalDateTime reviewedAt = null;
 
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AdminComment> adminComments = new ArrayList<>();
+
+    public void addComment(AdminComment comment) {
+        adminComments.add(comment);
+    }
 }
