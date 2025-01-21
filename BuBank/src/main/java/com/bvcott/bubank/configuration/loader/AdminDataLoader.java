@@ -1,4 +1,4 @@
-package com.bvcott.bubank.configuration;
+package com.bvcott.bubank.configuration.loader;
 
 import com.bvcott.bubank.model.user.Admin;
 import com.bvcott.bubank.model.user.Role;
@@ -21,12 +21,12 @@ public class AdminDataLoader {
         return args -> {
             Admin admin1 = new Admin();
             admin1.setUsername("admin1");
-            admin1.setPassword(passwordEncoder.encode("12345"));
+            admin1.setPassword(passwordEncoder.encode("test"));
             admin1.setRole(Role.ROLE_ADMIN);
 
             Admin admin2 = new Admin();
             admin2.setUsername("admin2");
-            admin2.setPassword(passwordEncoder.encode("12345"));
+            admin2.setPassword(passwordEncoder.encode("test"));
             admin2.setRole(Role.ROLE_ADMIN);
 
             userRepo.saveAll(List.of(admin1, admin2));
