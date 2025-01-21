@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {createAccount} from "../../services/accountService";
+import {createAccountRequest} from "../../services/accountService";
 import {Alert, Button, Col, Form, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 
@@ -22,7 +22,7 @@ const CreateAccountForm = () => {
         setErrorMessage('');
 
         try{
-            await createAccount(formData);
+            await createAccountRequest(formData);
             setSuccessMessage(`Account creation request submitted successfully! Redirecting to Dashboard...`);
             setTimeout(() => { navigate("/dashboard") }, 2000);
         } catch (error) {
