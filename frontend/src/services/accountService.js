@@ -12,7 +12,7 @@ export const fetchAccounts = async () => {
 
 export const createAccount = async (accountData) => {
     try {
-        const response = await api.post("/accounts/create", accountData);
+        const response = await api.post("/accounts/create-request", accountData);
         return response.data;
     } catch(error) {
         console.error("Error creating account: ", error);
