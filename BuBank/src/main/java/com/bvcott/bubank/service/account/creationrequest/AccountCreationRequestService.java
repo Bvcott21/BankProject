@@ -47,4 +47,11 @@ public class AccountCreationRequestService {
         return new AccountCreationRequestDTO(request);
         //TODO - Create frontend page to see request details, including list of comments.
     }
+
+    public AccountCreationRequestDTO getRequestById(Long requestId) {
+        AccountCreationRequest request = requestRepo.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Account Creation Request not found for id: " + requestId));
+
+        return new AccountCreationRequestDTO(request);
+    }
 }

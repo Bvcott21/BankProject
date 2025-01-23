@@ -29,3 +29,13 @@ export const fetchAccountCreationRequests = async () => {
         throw error;
     }
 }
+
+export const fetchAccountCreationRequestById = async (requestId) => {
+    try {
+        const response = await api.get(`/account-requests/${requestId}`);
+        return response.data;
+    } catch(error) {
+        console.error("Error fetching account creation request: ", error);
+        throw error;
+    }
+}
