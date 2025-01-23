@@ -12,13 +12,22 @@ import RequestStatus from "../../map/RequestStatus";
 const AccountCreationRequestDetails = () => {
     const navigate = useNavigate();
     const { requestId } = useParams();
-    const [ requestDetails, setRequestDetails ] = useState(null);
-    const [ loading, setLoading ] = useState(true);
-    const [ error, setError ] = useState(null);
-    const [ newComment, setNewComment ] = useState("");
-    const [ commentError, setCommentError ] = useState(null);
-    const [ submitting, setSubmitting ] = useState(false);
+    const [requestDetails, setRequestDetails] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [newComment, setNewComment] = useState("");
+    const [commentError, setCommentError] = useState(null);
+    const [submitting, setSubmitting] = useState(false);
     const currentUsername = localStorage.getItem('username');
+    const [showApprovalFields, setShowApprovalFields] = useState(false);
+    const [accountFields, setAccountFields] = useState({
+        initialBalance: '',
+        overdraftLimit: '',
+        interestRate: '',
+        creditLimit: '',
+    });
+
+    const isPending = requestDetails?.status === "PENDING";
 
     useEffect(() => {
         const loadRequestDetails = async () => {
@@ -40,7 +49,7 @@ const AccountCreationRequestDetails = () => {
         setSubmitting(true);
 
         try {
-            const updatedRequest = await addCommentToAccountCreationRequest(requestId, {comment: newComment});
+            const updatedRequest = await addCommentToAccountCreationRequest(requestId, { comment: newComment });
             setRequestDetails(updatedRequest);
             setNewComment(""); // clear input box
         } catch (error) {
@@ -48,19 +57,106 @@ const AccountCreationRequestDetails = () => {
         } finally {
             setSubmitting(false);
         }
-    }
+    };
 
-    const handleStatusChange = async (newStatus) => {
+    const handleApproveClick = () => {
+        setShowApprovalFields(true);
+    };
+
+    const handleCancelApprove = () => {
+        setShowApprovalFields(false);
+    };
+
+    const handleFinalApprove = async () => {
         try {
-            const updatedRequest = await updateAccountCreationRequestStatus(requestId, newStatus);
+            const accountDetails = {
+                initialBalance: accountFields.initialBalance,
+                accountType: requestDetails.accountType,
+                overdraftLimit: accountFields.overdraftLimit || null,
+                interestRate: accountFields.interestRate || null,
+                creditLimit: accountFields.creditLimit || null,
+            };
+
+            const updatedRequest = await updateAccountCreationRequestStatus(
+                requestId,
+                "APPROVED",
+                accountDetails
+            );
             setRequestDetails(updatedRequest);
-        } catch(error) {
-            setError("Failed to update status: " + error.message);
+        } catch (error) {
+            setError("Failed to approve request: " + error.message);
         }
-    }
+    };
+
+    const handleReject = async () => {
+        try {
+            const updatedRequest = await updateAccountCreationRequestStatus(requestId, "REJECTED", null);
+            setRequestDetails(updatedRequest);
+        } catch (error) {
+            setError("Failed to reject request: " + error.message);
+        }
+    };
+
+    const renderAccountFields = () => {
+        switch (requestDetails.accountType?.toLowerCase()) {
+            case "checking":
+                return (
+                    <Form.Group className="mb-3">
+                        <Form.Label>Overdraft Limit</Form.Label>
+                        <Form.Control
+                            type="number"
+                            value={accountFields.overdraftLimit}
+                            onChange={(e) =>
+                                setAccountFields((prev) => ({
+                                    ...prev,
+                                    overdraftLimit: e.target.value,
+                                }))
+                            }
+                            required
+                        />
+                    </Form.Group>
+                );
+            case "savings":
+                return (
+                    <Form.Group className="mb-3">
+                        <Form.Label>Interest Rate (%)</Form.Label>
+                        <Form.Control
+                            type="number"
+                            value={accountFields.interestRate}
+                            onChange={(e) =>
+                                setAccountFields((prev) => ({
+                                    ...prev,
+                                    interestRate: e.target.value,
+                                }))
+                            }
+                            required
+                        />
+                    </Form.Group>
+                );
+            case "business":
+                return (
+                    <Form.Group className="mb-3">
+                        <Form.Label>Credit Limit</Form.Label>
+                        <Form.Control
+                            type="number"
+                            value={accountFields.creditLimit}
+                            onChange={(e) =>
+                                setAccountFields((prev) => ({
+                                    ...prev,
+                                    creditLimit: e.target.value,
+                                }))
+                            }
+                            required
+                        />
+                    </Form.Group>
+                );
+            default:
+                return null;
+        }
+    };
 
     const getStatusBadgeColour = (status) => {
-        switch(status) {
+        switch (status) {
             case "PENDING":
                 return "warning";
             case "APPROVED":
@@ -70,7 +166,7 @@ const AccountCreationRequestDetails = () => {
             default:
                 return "secondary";
         }
-    }
+    };
 
     if (loading) {
         return (
@@ -79,10 +175,10 @@ const AccountCreationRequestDetails = () => {
                     <span className="visually-hidden">Loading...</span>
                 </Spinner>
             </div>
-        )
+        );
     }
 
-    if(error) {
+    if (error) {
         return <Alert severity="danger">Error: {error.message || "Unknown Error"}</Alert>;
     }
 
@@ -98,7 +194,19 @@ const AccountCreationRequestDetails = () => {
                 <Row className="justify-content-center">
                     <Col md={8}>
                         <Card className="mb-4">
-                            <Card.Header as="h4" className="bg-primary text-white">General Information</Card.Header>
+                            <Card.Header as="h4" className="bg-primary text-white">
+                                General Information
+                                {showApprovalFields && (
+                                    <Button
+                                        variant="warning"
+                                        size="sm"
+                                        style={{ float: "right" }}
+                                        onClick={handleCancelApprove}
+                                    >
+                                        Cancel
+                                    </Button>
+                                )}
+                            </Card.Header>
                             <Card.Body>
                                 <ListGroup variant="flush">
                                     <ListGroup.Item><strong>Request ID:</strong> {requestDetails.requestId}</ListGroup.Item>
@@ -118,17 +226,56 @@ const AccountCreationRequestDetails = () => {
                                         : "Not yet reviewed"}
                                     </ListGroup.Item>
                                 </ListGroup>
-                                <div className="d-flex justify-content-between mt-3">
-                                    <Button variant="success" onClick={() => handleStatusChange('APPROVED')}>
-                                        Approve
-                                    </Button>
-                                    <Button variant="danger" onClick={() => handleStatusChange('REJECTED')}>
-                                        Reject
-                                    </Button>
-                                </div>
+                                {!showApprovalFields && (
+                                    <div className="d-flex justify-content-between mt-3">
+                                        <Button
+                                            variant="success"
+                                            onClick={handleApproveClick}
+                                            disabled={!isPending}
+                                        >
+                                            Approve
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            onClick={handleReject}
+                                            disabled={!isPending}
+                                        >
+                                            Reject
+                                        </Button>
+                                    </div>
+                                )}
+                                {showApprovalFields && (
+                                    <>
+                                        <Form.Group className="mt-3">
+                                            <Form.Label>Initial Balance</Form.Label>
+                                            <Form.Control
+                                                type="number"
+                                                value={accountFields.initialBalance}
+                                                onChange={(e) =>
+                                                    setAccountFields((prev) => ({
+                                                        ...prev,
+                                                        initialBalance: e.target.value,
+                                                    }))
+                                                }
+                                                required
+                                            />
+                                        </Form.Group>
+                                        {renderAccountFields()}
+                                        <div className="text-center mt-4">
+                                            <Button
+                                                variant="success"
+                                                size="lg"
+                                                onClick={handleFinalApprove}
+                                            >
+                                                Final Approve
+                                            </Button>
+                                        </div>
+                                    </>
+                                )}
                             </Card.Body>
                         </Card>
 
+                        {/* Admin Comments */}
                         <Card className="mb-4">
                             <Card.Header as="h4" className="bg-secondary text-white">Admin Comments</Card.Header>
                             <Card.Body>
@@ -138,30 +285,20 @@ const AccountCreationRequestDetails = () => {
                                             <ListGroup.Item
                                                 key={index}
                                                 style={{
-                                                    backgroundColor: comment.username === currentUsername ? "#e8f5e9" : "white", // Light green for own comments
+                                                    backgroundColor: comment.username === currentUsername ? "#e8f5e9" : "white",
                                                     border: comment.username === currentUsername ? "1px solid #a5d6a7" : "1px solid #dee2e6",
-                                                    textAlign: comment.username === currentUsername ? "right" : "left", // Align text for own comments
+                                                    textAlign: comment.username === currentUsername ? "right" : "left",
                                                 }}
                                             >
                                                 {comment.username === currentUsername ? (
                                                     <>
-                                                        {/* Own comment: Right-aligned, date first */}
-                                                        <div>
-                                                            <em>{new Date(comment.timestamp).toLocaleString()}</em>
-                                                        </div>
-                                                        <div>
-                                                            <strong>{comment.username}</strong>
-                                                        </div>
+                                                        <div><em>{new Date(comment.timestamp).toLocaleString()}</em></div>
+                                                        <div><strong>{comment.username}</strong></div>
                                                     </>
                                                 ) : (
                                                     <>
-                                                        {/* Other comments: Left-aligned, username first */}
-                                                        <div>
-                                                            <strong>{comment.username}</strong>
-                                                        </div>
-                                                        <div>
-                                                            <em>{new Date(comment.timestamp).toLocaleString()}</em>
-                                                        </div>
+                                                        <div><strong>{comment.username}</strong></div>
+                                                        <div><em>{new Date(comment.timestamp).toLocaleString()}</em></div>
                                                     </>
                                                 )}
                                                 <div>{comment.comment}</div>
@@ -174,32 +311,34 @@ const AccountCreationRequestDetails = () => {
                             </Card.Body>
                         </Card>
 
-                        <Card>
-                            <Card.Header as="h4" className="bg-light">Add Comment</Card.Header>
-                            <Card.Body>
-                                {commentError && <Alert severity="danger">{commentError}</Alert>}
-                                <Form onSubmit={handleCommentSubmit}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Control
-                                            as="textarea"
-                                            rows={3}
-                                            value={newComment}
-                                            onChange={e => setNewComment(e.target.value)}
-                                            placeholder="Write your comment here..."
-                                            required
-                                        />
-                                    </Form.Group>
-                                    <Button
-                                        type="submit"
-                                        variant="primary"
-                                        disabled={submitting || newComment.trim() === ""}
-                                    >
-                                        {submitting ? "Submitting" : "Submit Comment"}
-                                    </Button>
-                                </Form>
-                            </Card.Body>
-                        </Card>
-
+                        {/* Add Comment */}
+                        {isPending && (
+                            <Card>
+                                <Card.Header as="h4" className="bg-light">Add Comment</Card.Header>
+                                <Card.Body>
+                                    {commentError && <Alert severity="danger">{commentError}</Alert>}
+                                    <Form onSubmit={handleCommentSubmit}>
+                                        <Form.Group className="mb-3">
+                                            <Form.Control
+                                                as="textarea"
+                                                rows={3}
+                                                value={newComment}
+                                                onChange={(e) => setNewComment(e.target.value)}
+                                                placeholder="Write your comment here..."
+                                                required
+                                            />
+                                        </Form.Group>
+                                        <Button
+                                            type="submit"
+                                            variant="primary"
+                                            disabled={submitting || newComment.trim() === ""}
+                                        >
+                                            {submitting ? "Submitting" : "Submit Comment"}
+                                        </Button>
+                                    </Form>
+                                </Card.Body>
+                            </Card>
+                        )}
                     </Col>
                 </Row>
             ) : (
@@ -207,6 +346,6 @@ const AccountCreationRequestDetails = () => {
             )}
         </div>
     );
-}
+};
 
 export default AccountCreationRequestDetails;
