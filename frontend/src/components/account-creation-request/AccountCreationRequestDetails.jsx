@@ -1,14 +1,17 @@
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {fetchAccountCreationRequestById} from "../../services/accountService";
+import {addCommentToAccountCreationRequest, fetchAccountCreationRequestById} from "../../services/accountService";
 import Spinner from "react-bootstrap/Spinner";
-import {Alert, Badge, Card, Col, ListGroup, Row} from "react-bootstrap";
+import {Alert, Badge, Button, Card, Col, Form, ListGroup, Row} from "react-bootstrap";
 
 const AccountCreationRequestDetails = () => {
     const { requestId } = useParams();
     const [ requestDetails, setRequestDetails ] = useState(null);
     const [ loading, setLoading ] = useState(true);
     const [ error, setError ] = useState(null);
+    const [ newComment, setNewComment ] = useState("");
+    const [ commentError, setCommentError ] = useState(null);
+    const [ submitting, setSubmitting ] = useState(false);
     const currentUsername = localStorage.getItem('username');
 
     useEffect(() => {
@@ -25,6 +28,21 @@ const AccountCreationRequestDetails = () => {
         loadRequestDetails();
     }, [requestId]);
 
+    const handleCommentSubmit = async (e) => {
+        e.preventDefault();
+        setCommentError(null);
+        setSubmitting(true);
+
+        try {
+            const updatedRequest = await addCommentToAccountCreationRequest(requestId, {comment: newComment});
+            setRequestDetails(updatedRequest);
+            setNewComment(""); // clear input box
+        } catch (error) {
+            setCommentError(error.message || "Failed to add comment.");
+        } finally {
+            setSubmitting(false);
+        }
+    }
     if (loading) {
         return (
             <div style={{ textAlign: "center", marginTop: "20px" }}>
@@ -64,7 +82,7 @@ const AccountCreationRequestDetails = () => {
                             </Card.Body>
                         </Card>
 
-                        <Card>
+                        <Card className="mb-4">
                             <Card.Header as="h4" className="bg-secondary text-white">Admin Comments</Card.Header>
                             <Card.Body>
                                 {requestDetails.adminComments.length > 0 ? (
@@ -72,11 +90,10 @@ const AccountCreationRequestDetails = () => {
                                         {requestDetails.adminComments.map((comment, index) => (
                                             <ListGroup.Item
                                                 key={index}
-                                                className={
-                                                    comment.username === currentUsername
-                                                        ? "bg-light text-primary"
-                                                        : ""
-                                                }
+                                                style={{
+                                                    backgroundColor: comment.username === currentUsername ? "#e8f5e9" : "white", // Light green for own comments
+                                                    border: comment.username === currentUsername ? "1px solid #a5d6a7" : "1px solid #dee2e6",
+                                                }}
                                             >
                                                 <div>
                                                     <strong>{comment.username}</strong> -{" "}
@@ -91,6 +108,33 @@ const AccountCreationRequestDetails = () => {
                                 )}
                             </Card.Body>
                         </Card>
+
+                        <Card>
+                            <Card.Header as="h4" className="bg-light">Add Comment</Card.Header>
+                            <Card.Body>
+                                {commentError && <Alert severity="danger">{commentError}</Alert>}
+                                <Form onSubmit={handleCommentSubmit}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Control
+                                            as="textarea"
+                                            rows={3}
+                                            value={newComment}
+                                            onChange={e => setNewComment(e.target.value)}
+                                            placeholder="Write your comment here..."
+                                            required
+                                        />
+                                    </Form.Group>
+                                    <Button
+                                        type="submit"
+                                        variant="primary"
+                                        disabled={submitting || newComment.trim() === ""}
+                                    >
+                                        {submitting ? "Submitting" : "Submit Comment"}
+                                    </Button>
+                                </Form>
+                            </Card.Body>
+                        </Card>
+
                     </Col>
                 </Row>
             ) : (

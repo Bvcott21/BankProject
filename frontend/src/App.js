@@ -10,6 +10,7 @@ import AccountDetails from "./components/account/AccountDetails";
 import CreateTransactionForm from "./components/txn/CreateTransactionForm";
 import AdminDashboard from "./pages/AdminDashboard";
 import Unauthorized from "./pages/Unauthorized";
+import AccountCreationRequestDetailsPage from "./pages/AccountCreationRequestDetailsPage";
 
 function App() {
   return (
@@ -67,6 +68,15 @@ function App() {
                 element={
                 <ProtectedRoute requiredRole="ROLE_ADMIN">
                     <AdminDashboard />
+                </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/admin/account-requests/:requestId"
+                element={
+                <ProtectedRoute requiredRole="ROLE_ADMIN">
+                    <AccountCreationRequestDetailsPage />
                 </ProtectedRoute>
                 }
             />

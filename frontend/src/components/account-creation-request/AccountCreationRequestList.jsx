@@ -85,7 +85,10 @@ const AccountCreationRequestList = () => {
                 </thead>
                 <tbody>
                 {accountCreationRequests.map((accountCreationRequest) => (
-                    <tr key={accountCreationRequest.requestId}>
+                    <tr
+                        key={accountCreationRequest.requestId}
+                        onClick={() => navigate(`/admin/account-requests/${accountCreationRequest.requestId}`)}
+                        style={{ cursor: "pointer" }}>
                         {columns.map((column) => (
                             <td key={column}>
                                 {getAttributeValue(accountCreationRequest, column)}

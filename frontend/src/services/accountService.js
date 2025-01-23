@@ -39,3 +39,13 @@ export const fetchAccountCreationRequestById = async (requestId) => {
         throw error;
     }
 }
+
+export const addCommentToAccountCreationRequest = async (requestId, formData) => {
+    try {
+        const response = await api.post(`/account-requests/comment/${requestId}`, formData);
+        return response.data;
+    } catch(error) {
+        console.error("Error adding comment: ", error);
+        throw error;
+    }
+}

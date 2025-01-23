@@ -33,10 +33,10 @@ public class AccountCreationRequestController {
         return ResponseEntity.ok(dtos);
     }
 
-    @PostMapping("/comment")
+    @PostMapping("/comment/{requestId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AccountCreationRequestDTO> addComment(
-            @RequestParam Long requestId,
+            @PathVariable Long requestId,
             @RequestBody @Valid AdminCommentDTO adminCommentDTO) {
         String username = SecurityContextHolder
                 .getContext()
