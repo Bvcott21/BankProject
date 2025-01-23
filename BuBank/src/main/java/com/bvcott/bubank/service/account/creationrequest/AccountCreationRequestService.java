@@ -4,6 +4,7 @@ import com.bvcott.bubank.dto.account.creationrequest.AccountCreationRequestDTO;
 import com.bvcott.bubank.dto.account.creationrequest.AdminCommentDTO;
 import com.bvcott.bubank.model.account.creationrequest.AccountCreationRequest;
 import com.bvcott.bubank.model.account.creationrequest.AdminComment;
+import com.bvcott.bubank.model.account.creationrequest.RequestStatus;
 import com.bvcott.bubank.model.user.Admin;
 import com.bvcott.bubank.repository.account.creationrequest.AccountCreationRequestRepository;
 import com.bvcott.bubank.repository.user.AdminRepository;
@@ -45,13 +46,31 @@ public class AccountCreationRequestService {
         request = requestRepo.save(request);
 
         return new AccountCreationRequestDTO(request);
-        //TODO - Create frontend page to see request details, including list of comments.
     }
 
     public AccountCreationRequestDTO getRequestById(Long requestId) {
         AccountCreationRequest request = requestRepo.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Account Creation Request not found for id: " + requestId));
 
+        return new AccountCreationRequestDTO(request);
+    }
+
+    public AccountCreationRequestDTO updateAccountCreationRequestStatus(Long requestId, String username, RequestStatus newStatus) {
+        AccountCreationRequest request = requestRepo.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Account creation request not found for id: " + requestId));
+
+        Admin reviewedBy = adminRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Admin not found for username: " + username));
+
+        if(!request.getStatus().equals(RequestStatus.PENDING)) {
+            throw new RuntimeException("A decision has already been taken on this request!");
+        }
+
+        request.setReviewedAt(LocalDateTime.now());
+        request.setReviewedBy(reviewedBy);
+        request.setStatus(newStatus);
+
+        request = requestRepo.save(request);
         return new AccountCreationRequestDTO(request);
     }
 }

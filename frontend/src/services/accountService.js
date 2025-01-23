@@ -49,3 +49,13 @@ export const addCommentToAccountCreationRequest = async (requestId, formData) =>
         throw error;
     }
 }
+
+export const updateAccountCreationRequestStatus = async (requestId, formData) => {
+    try {
+        const response = await api.post(`/account-requests/${requestId}`, formData);
+        return response.data;
+    } catch(error) {
+        console.error("Error updating account creation status: ", error);
+        throw error;
+    }
+}

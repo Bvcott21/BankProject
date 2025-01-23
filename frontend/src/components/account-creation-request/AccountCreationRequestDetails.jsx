@@ -1,10 +1,16 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {addCommentToAccountCreationRequest, fetchAccountCreationRequestById} from "../../services/accountService";
+import {
+    addCommentToAccountCreationRequest,
+    fetchAccountCreationRequestById,
+    updateAccountCreationRequestStatus
+} from "../../services/accountService";
 import Spinner from "react-bootstrap/Spinner";
 import {Alert, Badge, Button, Card, Col, Form, ListGroup, Row} from "react-bootstrap";
+import RequestStatus from "../../map/RequestStatus";
 
 const AccountCreationRequestDetails = () => {
+    const navigate = useNavigate();
     const { requestId } = useParams();
     const [ requestDetails, setRequestDetails ] = useState(null);
     const [ loading, setLoading ] = useState(true);
@@ -43,6 +49,29 @@ const AccountCreationRequestDetails = () => {
             setSubmitting(false);
         }
     }
+
+    const handleStatusChange = async (newStatus) => {
+        try {
+            const updatedRequest = await updateAccountCreationRequestStatus(requestId, newStatus);
+            setRequestDetails(updatedRequest);
+        } catch(error) {
+            setError("Failed to update status: " + error.message);
+        }
+    }
+
+    const getStatusBadgeColour = (status) => {
+        switch(status) {
+            case "PENDING":
+                return "warning";
+            case "APPROVED":
+                return "success";
+            case "REJECTED":
+                return "danger";
+            default:
+                return "secondary";
+        }
+    }
+
     if (loading) {
         return (
             <div style={{ textAlign: "center", marginTop: "20px" }}>
@@ -59,6 +88,11 @@ const AccountCreationRequestDetails = () => {
 
     return (
         <div className="container mt-4">
+            <div className="text-center mb-4">
+                <Button variant="secondary" onClick={() => navigate("/admin/dashboard")}>
+                    Back to Admin Dashboard
+                </Button>
+            </div>
             <h2 className="text-center mb-4">Request Details</h2>
             {requestDetails ? (
                 <Row className="justify-content-center">
@@ -69,7 +103,12 @@ const AccountCreationRequestDetails = () => {
                                 <ListGroup variant="flush">
                                     <ListGroup.Item><strong>Request ID:</strong> {requestDetails.requestId}</ListGroup.Item>
                                     <ListGroup.Item><strong>Account Type:</strong> {requestDetails.accountType}</ListGroup.Item>
-                                    <ListGroup.Item><strong>Status:</strong> <Badge bg="info">{requestDetails.status}</Badge></ListGroup.Item>
+                                    <ListGroup.Item>
+                                        <strong>Status:</strong>
+                                        <Badge bg={getStatusBadgeColour(requestDetails.status)}>
+                                            {RequestStatus[requestDetails.status] || "Unknown"}
+                                        </Badge>
+                                    </ListGroup.Item>
                                     <ListGroup.Item><strong>Requested By:</strong> {requestDetails.requestedByUsername}</ListGroup.Item>
                                     <ListGroup.Item><strong>Reviewed By:</strong> {requestDetails.reviewedByUsername || "Not yet reviewed"}</ListGroup.Item>
                                     <ListGroup.Item><strong>Created At:</strong> {new Date(requestDetails.createdAt).toLocaleString()}</ListGroup.Item>
@@ -79,6 +118,14 @@ const AccountCreationRequestDetails = () => {
                                         : "Not yet reviewed"}
                                     </ListGroup.Item>
                                 </ListGroup>
+                                <div className="d-flex justify-content-between mt-3">
+                                    <Button variant="success" onClick={() => handleStatusChange('APPROVED')}>
+                                        Approve
+                                    </Button>
+                                    <Button variant="danger" onClick={() => handleStatusChange('REJECTED')}>
+                                        Reject
+                                    </Button>
+                                </div>
                             </Card.Body>
                         </Card>
 
@@ -93,12 +140,30 @@ const AccountCreationRequestDetails = () => {
                                                 style={{
                                                     backgroundColor: comment.username === currentUsername ? "#e8f5e9" : "white", // Light green for own comments
                                                     border: comment.username === currentUsername ? "1px solid #a5d6a7" : "1px solid #dee2e6",
+                                                    textAlign: comment.username === currentUsername ? "right" : "left", // Align text for own comments
                                                 }}
                                             >
-                                                <div>
-                                                    <strong>{comment.username}</strong> -{" "}
-                                                    <em>{new Date(comment.timestamp).toLocaleString()}</em>
-                                                </div>
+                                                {comment.username === currentUsername ? (
+                                                    <>
+                                                        {/* Own comment: Right-aligned, date first */}
+                                                        <div>
+                                                            <em>{new Date(comment.timestamp).toLocaleString()}</em>
+                                                        </div>
+                                                        <div>
+                                                            <strong>{comment.username}</strong>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {/* Other comments: Left-aligned, username first */}
+                                                        <div>
+                                                            <strong>{comment.username}</strong>
+                                                        </div>
+                                                        <div>
+                                                            <em>{new Date(comment.timestamp).toLocaleString()}</em>
+                                                        </div>
+                                                    </>
+                                                )}
                                                 <div>{comment.comment}</div>
                                             </ListGroup.Item>
                                         ))}
