@@ -1,5 +1,6 @@
 package com.bvcott.bubank.controller.account.creationrequest;
 
+import com.bvcott.bubank.dto.CreateAccountDTO;
 import com.bvcott.bubank.dto.account.creationrequest.AccountCreationRequestDTO;
 import com.bvcott.bubank.dto.account.creationrequest.AdminCommentDTO;
 import com.bvcott.bubank.model.account.creationrequest.AccountCreationRequest;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AccountCreationRequestController {
     private final AccountCreationRequestService requestService;
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     public AccountCreationRequestController(AccountCreationRequestService requestService) {
         this.requestService = requestService;
@@ -30,7 +32,7 @@ public class AccountCreationRequestController {
         List<AccountCreationRequest> requests = requestService.getAllRequests();
         List<AccountCreationRequestDTO> dtos = requests.stream()
                 .map(AccountCreationRequestDTO::new)
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
         return ResponseEntity.ok(dtos);
     }
 
@@ -57,12 +59,18 @@ public class AccountCreationRequestController {
     @PostMapping("/{requestId}")
     public ResponseEntity<AccountCreationRequestDTO> updateRequestDecision(
             @PathVariable Long requestId,
-            @RequestBody RequestStatus newStatus) {
+            @RequestParam RequestStatus newStatus,
+            @RequestBody CreateAccountDTO dto) {
+        log.info("updateRequestDecision triggered with values: requestId: {} , newStatus {}, accountDetails {}", requestId, newStatus, dto);
         String username = SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getName();
-        AccountCreationRequestDTO requestDTO = requestService.updateAccountCreationRequestStatus(requestId, username, newStatus);
+
+        AccountCreationRequestDTO requestDTO = requestService.updateAccountCreationRequestStatus(requestId,
+                username,
+                newStatus, dto);
+
         return ResponseEntity.ok(requestDTO);
     }
 }
