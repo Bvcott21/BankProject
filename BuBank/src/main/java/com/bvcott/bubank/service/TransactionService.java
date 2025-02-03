@@ -1,6 +1,7 @@
 package com.bvcott.bubank.service;
 
 import com.bvcott.bubank.dto.TransactionDTO;
+import com.bvcott.bubank.mapper.transaction.TransactionMapper;
 import com.bvcott.bubank.model.transaction.Transaction;
 import com.bvcott.bubank.model.transaction.TransactionType;
 import com.bvcott.bubank.model.transaction.transfer.TransferDirection;
@@ -24,11 +25,13 @@ import java.util.stream.Stream;
 public class TransactionService {
     private final TransactionRepository txnRepo;
     private final AccountService accountService;
+    private final TransactionMapper txnMapper;
     private final static Logger log = LoggerFactory.getLogger(TransactionService.class);
 
-    public TransactionService(TransactionRepository txnRepo, AccountService accountService) {
+    public TransactionService(TransactionRepository txnRepo, AccountService accountService, TransactionMapper txnMapper) {
         this.txnRepo = txnRepo;
         this.accountService = accountService;
+        this.txnMapper = txnMapper;
     }
 
     @Transactional
@@ -115,29 +118,28 @@ public class TransactionService {
     }
 
     private Transaction createTransactionEntity(TransactionDTO dto, String transactionNumber) {
-        Transaction txn = new Transaction();
-        txn.setAccountNumber(dto.getAccountNumber());
+        // Convert most fields with mapper
+        Transaction txn = txnMapper.toTransactionEntity(dto);
+
+        // Manually set the fields you want to override
         txn.setTransactionNumber(transactionNumber);
-        txn.setTransactionType(dto.getTransactionType());
-        txn.setAmount(BigDecimal.valueOf(dto.getAmount()));
         txn.setTimestamp(LocalDateTime.now());
+
         return txn;
     }
 
     private TransferTransaction createTransferTransactionEntity(TransactionDTO dto, String transactionNumber, TransactionType type) {
-        TransferTransaction txn = new TransferTransaction();
+        // Let the mapper handle the basic copying of fields
+        TransferTransaction txn = txnMapper.toTransferTransactionEntity(dto);
 
-        // Sender's account perspective
-        txn.setAccountNumber(dto.getAccountNumber()); // The sender's account number
-        txn.setTransactionNumber(transactionNumber); // Shared transaction number between sender and receiver
-        txn.setReceivingAccountNumber(dto.getReceivingAccountNumber()); // Receiver's account number
-        txn.setTransactionType(type); // Transaction type remains TRANSFER
-        txn.setAmount(BigDecimal.valueOf(dto.getAmount())); // Transfer amount
-        txn.setTimestamp(LocalDateTime.now()); // Current timestamp
-        txn.setTransferDirection(TransferDirection.SENDER); // Indicate this is a sender transaction
-
-        // Optional: Include sender's account number explicitly
-        txn.setSenderAccountNumber(dto.getAccountNumber()); // Sender's account number explicitly set
+        // Add the custom logic specific to a transfer
+        txn.setAccountNumber(dto.getAccountNumber());
+        txn.setTransactionNumber(transactionNumber);
+        txn.setTransactionType(type);
+        txn.setTimestamp(LocalDateTime.now());
+        txn.setTransferDirection(TransferDirection.SENDER);
+        txn.setSenderAccountNumber(dto.getAccountNumber());
+        // ...and so on
 
         return txn;
     }
