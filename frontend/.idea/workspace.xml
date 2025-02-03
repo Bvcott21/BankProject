@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="64c6a83d-1b19-49d1-a3d6-94f73d544b9c" name="Changes" comment="Admin's own comments now have a light green background." />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JSX File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2raelYyn0JlpomVVcx5kLz6yJCs" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/account-creation-request&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/bvcott/Desktop/projects/BankProject/frontend&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.start (1).executor&quot;: &quot;Run&quot;,
+    &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/account-creation-request" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.start" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="64c6a83d-1b19-49d1-a3d6-94f73d544b9c" name="Changes" comment="" />
+      <created>1736801764713</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1736801764713</updated>
+      <workItem from="1736801766015" duration="4449000" />
+      <workItem from="1737121738101" duration="9000" />
+      <workItem from="1737306486575" duration="1449000" />
+      <workItem from="1737320082719" duration="599000" />
+      <workItem from="1737460848821" duration="15241000" />
+      <workItem from="1737633756984" duration="12645000" />
+      <workItem from="1738057507038" duration="1053000" />
+    </task>
+    <task id="LOCAL-00001" summary="Created unauthorized page.">
+      <option name="closed" value="true" />
+      <created>1737467198565</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1737467198565</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Created AccountCreationRequestList.jsx component">
+      <option name="closed" value="true" />
+      <created>1737467211193</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1737467211193</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Created AdminDashboard component.">
+      <option name="closed" value="true" />
+      <created>1737467221001</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1737467221001</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Created endpoint call in accountService.js to retrieve all account creation request.">
+      <option name="closed" value="true" />
+      <created>1737467249251</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1737467249251</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Updated method call in CreateAccountForm.jsx">
+      <option name="closed" value="true" />
+      <created>1737467268515</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1737467268515</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Organized routes, also included route to unauthorized and AdminDashboard pages.">
+      <option name="closed" value="true" />
+      <created>1737467323941</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1737467323941</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Updating login component.">
+      <option name="closed" value="true" />
+      <created>1737467335617</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1737467335617</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Updated Unauthorized.jsx's page to reflect correct http status code.">
+      <option name="closed" value="true" />
+      <created>1737468421784</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1737468421784</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Updated ProtectedRoute so now it includes the user´s role">
+      <option name="closed" value="true" />
+      <created>1737474034516</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1737474034516</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Included logging in Login form for debugging purposes.">
+      <option name="closed" value="true" />
+      <created>1737474126796</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1737474126796</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Included username and role in the response in AuthController">
+      <option name="closed" value="true" />
+      <created>1737474146211</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1737474146211</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Updated AuthContext so it also passes along role related data">
+      <option name="closed" value="true" />
+      <created>1737474175727</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1737474175727</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Fixed endpoint pre authorization in AccountCreationRequestController.java">
+      <option name="closed" value="true" />
+      <created>1737474205121</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1737474205121</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Debugging logging included in api.js">
+      <option name="closed" value="true" />
+      <created>1737474491483</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1737474491483</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Updated passwords for admins to 'test'">
+      <option name="closed" value="true" />
+      <created>1737476502518</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1737476502518</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Preloaded customers.">
+      <option name="closed" value="true" />
+      <created>1737476516117</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1737476516117</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Created DTOs for Account Creation Requests and for Admin Comments.">
+      <option name="closed" value="true" />
+      <created>1737476541160</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1737476541160</updated>
+    </task>
+    <task id="LOCAL-00018" summary="AccountCreationRequestController.java now works with DTOs instead of the actual entities.">
+      <option name="closed" value="true" />
+      <created>1737476568227</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1737476568227</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Updated properties within list in AccountCreationRequestList.">
+      <option name="closed" value="true" />
+      <created>1737476584042</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1737476584042</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Admin's own comments now have a light green background.">
+      <option name="closed" value="true" />
+      <created>1737642688146</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1737642688146</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Created unauthorized page." />
+    <MESSAGE value="Created AccountCreationRequestList.jsx component" />
+    <MESSAGE value="Created AdminDashboard component." />
+    <MESSAGE value="Created endpoint call in accountService.js to retrieve all account creation request." />
+    <MESSAGE value="Updated method call in CreateAccountForm.jsx" />
+    <MESSAGE value="Organized routes, also included route to unauthorized and AdminDashboard pages." />
+    <MESSAGE value="Updating login component." />
+    <MESSAGE value="Updated Unauthorized.jsx's page to reflect correct http status code." />
+    <MESSAGE value="Updated ProtectedRoute so now it includes the user´s role" />
+    <MESSAGE value="Included logging in Login form for debugging purposes." />
+    <MESSAGE value="Included username and role in the response in AuthController" />
+    <MESSAGE value="Updated AuthContext so it also passes along role related data" />
+    <MESSAGE value="Fixed endpoint pre authorization in AccountCreationRequestController.java" />
+    <MESSAGE value="Debugging logging included in api.js" />
+    <MESSAGE value="Updated passwords for admins to 'test'" />
+    <MESSAGE value="Preloaded customers." />
+    <MESSAGE value="Created DTOs for Account Creation Requests and for Admin Comments." />
+    <MESSAGE value="AccountCreationRequestController.java now works with DTOs instead of the actual entities." />
+    <MESSAGE value="Updated properties within list in AccountCreationRequestList." />
+    <MESSAGE value="Admin's own comments now have a light green background." />
+    <option name="LAST_COMMIT_MESSAGE" value="Admin's own comments now have a light green background." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/App.js</url>
+          <line>28</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
