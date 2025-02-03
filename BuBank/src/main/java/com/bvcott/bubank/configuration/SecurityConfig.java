@@ -10,7 +10,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -29,13 +28,14 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/api/v1/auth/register", 
+                    "/api/v1/auth/register",
                     "/api/v1/auth/login").permitAll()
                     .requestMatchers("/api/v1/accounts").authenticated()
                     .requestMatchers("/api/v1/accounts/**").authenticated()
                     .requestMatchers("/api/v1/transactions").authenticated()
                     .requestMatchers("/api/v1/transactions/**").authenticated()
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/api/v1/account-requests").hasRole("ADMIN")
                 .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();

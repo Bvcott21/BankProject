@@ -17,8 +17,16 @@ const Login = () => {
         setIsLoading(true);
 
         try {
-            await authService.login(credentials); // Call login service
-            window.location.href = "/dashboard"; // Redirect on success
+            const userData = await authService.login(credentials); // Call login service
+            const role = userData.role;
+
+            localStorage.setItem("user", JSON.stringify(userData));
+            console.log("User logged in: ", userData);
+            if (role === "ROLE_ADMIN") {
+                window.location.href = "/admin/dashboard";
+            } else {
+                window.location.href = "/dashboard"; // Redirect on success
+            }
         } catch (err) {
             setError("Login failed. Please check your username and password.");
             console.error("Login error: ", err);

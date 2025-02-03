@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bvcott.bubank.dto.LoginSignupDTO;
-import com.bvcott.bubank.model.Role;
-import com.bvcott.bubank.model.User;
+import com.bvcott.bubank.model.user.User;
 import com.bvcott.bubank.service.UserService;
 import com.bvcott.bubank.util.JwtUtil;
 
@@ -23,7 +22,7 @@ public class AuthController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     
     public AuthController(UserService userService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
         this.userService = userService;
@@ -42,7 +41,7 @@ public class AuthController {
             throw new IllegalArgumentException("Password cannot be empty.");
         }
         
-        User user = userService.registerUser(dto.getUsername(), dto.getPassword(), Role.ROLE_USER);
+        User user = userService.registerCustomer(dto.getUsername(), dto.getPassword());
 
         log.info("Registered user: {}", user);
         return "User registered successfully!";
@@ -73,6 +72,8 @@ public class AuthController {
         Map<String, String> response = new HashMap<>();
         response.put("accessToken", accessToken); // Return only the token without "Bearer"
         response.put("refreshToken", refreshToken);
+        response.put("username", user.getUsername());
+        response.put("role", user.getRole().toString());
         return ResponseEntity.ok(response);
     }
 

@@ -6,9 +6,10 @@ const authService = {
         console.log("Login API called with credentials", credentials);
         const response = await api.post('/auth/login', credentials);
         console.log("Login response", response);
-        const { accessToken, refreshToken } = response.data;
+        const { accessToken, refreshToken, username } = response.data;
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('username', username);
         return response.data;
     },
     logout: async (navigate) => {

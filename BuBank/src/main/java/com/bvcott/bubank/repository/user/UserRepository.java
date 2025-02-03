@@ -1,8 +1,8 @@
-package com.bvcott.bubank.repository;
+package com.bvcott.bubank.repository.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.bvcott.bubank.model.User;
+import com.bvcott.bubank.model.user.User;
 
 import java.util.Optional;
 

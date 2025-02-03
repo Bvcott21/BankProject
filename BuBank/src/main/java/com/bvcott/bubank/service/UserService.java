@@ -1,11 +1,11 @@
 package com.bvcott.bubank.service;
 
-import com.bvcott.bubank.model.Role;
-import com.bvcott.bubank.model.User;
-import com.bvcott.bubank.repository.UserRepository;
+import com.bvcott.bubank.model.user.Customer;
+import com.bvcott.bubank.model.user.Role;
+import com.bvcott.bubank.model.user.User;
+import com.bvcott.bubank.repository.user.UserRepository;
 
 import java.util.Collections;
-import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,13 +23,16 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User registerUser(String username, String rawPassword, Role role) {
+    public User registerCustomer(String username, String rawPassword) {
         if (userRepository.findByUsername(username).isPresent()) {
             throw new RuntimeException("Username already exists!");
         }
         String hashedPassword = passwordEncoder.encode(rawPassword);
-        User user = new User(username, hashedPassword, role);
-        return userRepository.save(user);
+        Customer customer = new Customer();
+        customer.setUsername(username);
+        customer.setPassword(hashedPassword);
+        customer.setRole(Role.ROLE_CUSTOMER);
+        return userRepository.save(customer);
     }
 
     public User findByUsername(String username) {

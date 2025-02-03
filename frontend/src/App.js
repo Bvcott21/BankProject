@@ -8,28 +8,34 @@ import CreateAccountPage from "./pages/CreateAccountPage";
 import AccountList from "./components/account/AccountList";
 import AccountDetails from "./components/account/AccountDetails";
 import CreateTransactionForm from "./components/txn/CreateTransactionForm";
+import AdminDashboard from "./pages/AdminDashboard";
+import Unauthorized from "./pages/Unauthorized";
+import AccountCreationRequestDetailsPage from "./pages/AccountCreationRequestDetailsPage";
 
 function App() {
   return (
     <Router>
       <div className="container mt-4">
         <Routes>
+            {/*Public routes*/}
           <Route path="/" element={<Home />}/>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+            {/*Authenticated customer routes*/}
           <Route
             path="/dashboard"
             element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredRole="ROLE_CUSTOMER" >
                     <Dashboard />
                 </ProtectedRoute>
             }
           />
           <Route
-            path="/create-account"
+            path="/apply-to-account"
             element={
               <ProtectedRoute>
-                  <CreateAccountPage />
+                  <CreateAccountPage requiredRole="ROLE_CUSTOMER"/>
               </ProtectedRoute>
             }
           />
@@ -37,22 +43,40 @@ function App() {
             path="/accounts"
             element={
               <ProtectedRoute>
-                  <AccountList />
+                  <AccountList requiredRole="ROLE_CUSTOMER"/>
               </ProtectedRoute>
             }/>
           <Route
             path="/accounts/:accountNumber"
             element={
               <ProtectedRoute>
-                  <AccountDetails />
+                  <AccountDetails requiredRole="ROLE_CUSTOMER"/>
               </ProtectedRoute>
             }
           />
             <Route
                 path="/create-transaction"
                 element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredRole="ROLE_CUSTOMER">
                     <CreateTransactionForm />
+                </ProtectedRoute>
+                }
+            />
+            {/*Authenticated admin routes*/}
+            <Route
+                path="/admin/dashboard"
+                element={
+                <ProtectedRoute requiredRole="ROLE_ADMIN">
+                    <AdminDashboard />
+                </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/admin/account-requests/:requestId"
+                element={
+                <ProtectedRoute requiredRole="ROLE_ADMIN">
+                    <AccountCreationRequestDetailsPage />
                 </ProtectedRoute>
                 }
             />

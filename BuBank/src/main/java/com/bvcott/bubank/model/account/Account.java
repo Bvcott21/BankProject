@@ -2,7 +2,7 @@ package com.bvcott.bubank.model.account;
 
 import java.math.BigDecimal;
 
-import com.bvcott.bubank.model.User;
+import com.bvcott.bubank.model.user.Customer;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
@@ -25,5 +25,5 @@ public class Account {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", nullable = false)
     @JsonBackReference
-    private User user;
+    private Customer customer;
 }

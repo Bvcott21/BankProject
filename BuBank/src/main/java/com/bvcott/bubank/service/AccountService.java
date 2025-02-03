@@ -1,17 +1,25 @@
 package com.bvcott.bubank.service;
 
+import com.bvcott.bubank.dto.CreateAccountRequestDTO;
+import com.bvcott.bubank.model.account.creationrequest.AccountCreationRequest;
+import com.bvcott.bubank.model.account.creationrequest.AdminComment;
+import com.bvcott.bubank.model.user.Admin;
+import com.bvcott.bubank.model.user.Customer;
 import com.bvcott.bubank.model.account.BusinessAccount;
 import com.bvcott.bubank.model.account.CheckingAccount;
 import com.bvcott.bubank.model.account.SavingsAccount;
+import com.bvcott.bubank.repository.account.creationrequest.AccountCreationRequestRepository;
+import com.bvcott.bubank.repository.user.AdminRepository;
+import com.bvcott.bubank.repository.user.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bvcott.bubank.dto.CreateAccountDTO;
 import com.bvcott.bubank.model.account.Account;
-import com.bvcott.bubank.model.User;
+import com.bvcott.bubank.model.user.User;
 import com.bvcott.bubank.repository.AccountRepository;
-import com.bvcott.bubank.repository.UserRepository;
+import com.bvcott.bubank.repository.user.UserRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -22,18 +30,50 @@ import java.util.List;
 public class AccountService {
     private final AccountRepository accountRepo;
     private final UserRepository userRepo;
+    private final AccountCreationRequestRepository requestRepo;
+    private final CustomerRepository customerRepo;
+    private final AdminRepository adminRepo;
     private static final Logger log = LoggerFactory.getLogger(AccountService.class);
     
-    public AccountService(AccountRepository accountRepo, UserRepository userRepo) {
+    public AccountService(AccountRepository accountRepo,
+                          UserRepository userRepo,
+                          AccountCreationRequestRepository requestRepo,
+                          CustomerRepository customerRepo,
+                          AdminRepository adminRepo) {
         this.accountRepo = accountRepo;
         this.userRepo = userRepo;
+        this.requestRepo = requestRepo;
+        this.customerRepo = customerRepo;
+        this.adminRepo = adminRepo;
     }
+
+    public AccountCreationRequest createAccountRequest(CreateAccountRequestDTO dto, String username) {
+        Customer customer = customerRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Customer not found for username: " + username));
+
+        AccountCreationRequest request = new AccountCreationRequest();
+        request.setAccountType(dto.getAccountType());
+        request.setRequestedBy(customer);
+
+        request = requestRepo.save(request);
+        log.info("Account creation request succesfully created with details: " + request);
+        return request;
+    }
+
+
 
     @Transactional
     public Account createAccount(CreateAccountDTO dto, String username) {
         log.info("Create account triggered with values: dto - {}, username: {}", dto, username);
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Logged-in user not found."));
+
+        Customer customer;
+        if(user instanceof Customer) {
+            customer = (Customer) user;
+        } else {
+            throw new RuntimeException("Only Customers can have associated accounts");
+        }
 
         log.info("User found, creating account...");
         String nextAccountNumber = generateNextAccountNumber(dto.getAccountType());
@@ -61,19 +101,26 @@ public class AccountService {
 
         account.setAccountNumber(nextAccountNumber);
         account.setBalance(dto.getInitialBalance());
-        user.addAccount(account);
+        customer.addAccount(account);
 
         userRepo.save(user);
 
         return account;
     }
 
-    public List<Account> listUserAccounts(String username) {
+    public List<Account> listAccounts(String username) {
         log.info("Finding account for username: {}", username);
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Logged-in user not found."));
+        Customer customer;
 
-        return user.getAccounts();
+        if(user instanceof Customer) {
+            customer = (Customer) user;
+        } else {
+            throw new RuntimeException("Only customers have associated accounts");
+        }
+
+        return customer.getAccounts();
     }
 
     private String generateNextAccountNumber(String accountType) {
@@ -152,7 +199,7 @@ public class AccountService {
     }
 
     public boolean isOwner(String accountNumber, String username) {
-        boolean exists = accountRepo.existsByAccountNumberAndUser_Username(accountNumber, username);
+        boolean exists = accountRepo.existsByAccountNumberAndCustomer_Username(accountNumber, username);
         log.info("IsOwner Check - Account Number: {}, Username: {}, Exists: {}", accountNumber, username, exists);
         return exists;
     }
