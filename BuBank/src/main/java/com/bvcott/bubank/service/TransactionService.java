@@ -4,6 +4,7 @@ import com.bvcott.bubank.dto.TransactionDTO;
 import com.bvcott.bubank.mapper.transaction.TransactionMapper;
 import com.bvcott.bubank.model.transaction.Transaction;
 import com.bvcott.bubank.model.transaction.TransactionType;
+import com.bvcott.bubank.model.transaction.merchant.MerchantTransaction;
 import com.bvcott.bubank.model.transaction.transfer.TransferDirection;
 import com.bvcott.bubank.model.transaction.transfer.TransferTransaction;
 import com.bvcott.bubank.repository.TransactionRepository;
@@ -45,6 +46,8 @@ public class TransactionService {
                 return processWithdrawal(dto);
             case TRANSFER:
                 return processTransfer(dto);
+            case MERCHANT:
+                return processMerchantTransaction(dto);
             default:
                 throw new IllegalArgumentException("Unsupported transaction type: " + dto.getTransactionType());
         }
@@ -68,6 +71,27 @@ public class TransactionService {
         accountService.withdraw(dto.getAccountNumber(), BigDecimal.valueOf(dto.getAmount()));
         Transaction txn = createTransactionEntity(dto, generateNextTransactionNumber());
         return txnRepo.save(txn);
+    }
+
+    private MerchantTransaction processMerchantTransaction(TransactionDTO dto) {
+        if (dto.getMerchantName() == null) {
+            throw new IllegalArgumentException("A Merchant name is required for merchant transactions");
+        }
+        accountService.withdraw(dto.getAccountNumber(), BigDecimal.valueOf(dto.getAmount()));
+        String transactionNumber = generateNextTransactionNumber();
+        MerchantTransaction merchantTxn = createMerchantTransactionEntity(dto, transactionNumber);
+        return merchantTxn;
+    }
+
+    private MerchantTransaction createMerchantTransactionEntity(TransactionDTO dto, String transactionNumber) {
+        // Use the mapper to copy over fields
+        MerchantTransaction txn = txnMapper.toMerchantTransactionEntity(dto);
+        // Manually set the fields we want to override
+        txn.setTransactionNumber(transactionNumber);
+        txn.setTimestamp(LocalDateTime.now());
+        // Possibly set the transactionType if you’re using the MERCHANT enum
+        txn.setTransactionType(TransactionType.MERCHANT);
+        return txn;
     }
 
     private TransferTransaction processTransfer(TransactionDTO dto) {

@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64c6a83d-1b19-49d1-a3d6-94f73d544b9c" name="Changes" comment="Admin's own comments now have a light green background." />
+    <list default="true" id="64c6a83d-1b19-49d1-a3d6-94f73d544b9c" name="Changes" comment="Admin's own comments now have a light green background.">
+      <change beforePath="$PROJECT_DIR$/../BuBank/src/main/java/com/bvcott/bubank/mapper/transaction/TransactionMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BuBank/src/main/java/com/bvcott/bubank/mapper/transaction/TransactionMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BuBank/src/main/java/com/bvcott/bubank/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BuBank/src/main/java/com/bvcott/bubank/service/TransactionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/account/AccountDetails.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/account/AccountDetails.jsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,24 +41,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/account-creation-request&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/bvcott/Desktop/projects/BankProject/frontend&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.start (1).executor&quot;: &quot;Run&quot;,
-    &quot;npm.start.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "feature/transaction-refinement",
+    "last_opened_file_path": "/Users/bvcott/Desktop/Desktop - Edgar’s MacBook Pro/projects/BankProject/frontend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.start (1).executor": "Run",
+    "npm.start.executor": "Run",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/components/account-creation-request" />
@@ -99,6 +103,7 @@
       <workItem from="1737460848821" duration="15241000" />
       <workItem from="1737633756984" duration="12645000" />
       <workItem from="1738057507038" duration="1053000" />
+      <workItem from="1738598863779" duration="1382000" />
     </task>
     <task id="LOCAL-00001" summary="Created unauthorized page.">
       <option name="closed" value="true" />

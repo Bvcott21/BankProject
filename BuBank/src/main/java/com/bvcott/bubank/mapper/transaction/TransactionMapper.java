@@ -2,6 +2,7 @@ package com.bvcott.bubank.mapper.transaction;
 
 import com.bvcott.bubank.dto.TransactionDTO;
 import com.bvcott.bubank.model.transaction.Transaction;
+import com.bvcott.bubank.model.transaction.merchant.MerchantTransaction;
 import com.bvcott.bubank.model.transaction.transfer.TransferTransaction;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -28,4 +29,9 @@ public interface TransactionMapper {
     @Mapping(target = "transferDirection", ignore = true)
     @Mapping(target = "senderAccountNumber", ignore = true)
     TransferTransaction toTransferTransactionEntity(TransactionDTO dto);
+
+    @Mapping(target = "transactionId", ignore = true)
+    @Mapping(target = "timestamp", ignore = true)
+    @Mapping(target = "transactionNumber", ignore = true)
+    MerchantTransaction toMerchantTransactionEntity(TransactionDTO dto);
 }
