@@ -1,6 +1,5 @@
 package com.bvcott.bubank.configuration.loader;
 
-import com.bvcott.bubank.model.user.Admin;
 import com.bvcott.bubank.model.user.Customer;
 import com.bvcott.bubank.model.user.Role;
 import com.bvcott.bubank.repository.user.UserRepository;
