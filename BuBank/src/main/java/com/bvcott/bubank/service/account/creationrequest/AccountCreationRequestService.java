@@ -9,7 +9,6 @@ import com.bvcott.bubank.model.account.creationrequest.RequestStatus;
 import com.bvcott.bubank.model.user.Admin;
 import com.bvcott.bubank.repository.account.creationrequest.AccountCreationRequestRepository;
 import com.bvcott.bubank.repository.user.AdminRepository;
-import com.bvcott.bubank.repository.user.CustomerRepository;
 import com.bvcott.bubank.service.AccountService;
 import org.springframework.stereotype.Service;
 
@@ -20,17 +19,14 @@ import java.util.List;
 public class AccountCreationRequestService {
     private final AccountCreationRequestRepository requestRepo;
     private final AdminRepository adminRepo;
-    private final CustomerRepository customerRepo;
     private final AccountService accountService;
 
     public AccountCreationRequestService(
             AccountCreationRequestRepository requestRepo,
             AdminRepository adminRepo,
-            CustomerRepository customerRepo,
             AccountService accountService) {
         this.requestRepo = requestRepo;
         this.adminRepo = adminRepo;
-        this.customerRepo = customerRepo;
         this.accountService = accountService;
     }
 
