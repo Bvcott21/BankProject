@@ -32,7 +32,7 @@ public class JwtFilter extends OncePerRequestFilter implements ApplicationContex
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
