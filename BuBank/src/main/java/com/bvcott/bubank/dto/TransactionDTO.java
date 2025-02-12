@@ -4,7 +4,6 @@ import com.bvcott.bubank.model.transaction.TransactionType;
 import com.bvcott.bubank.model.transaction.merchant.MerchantCategory;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
