@@ -7,7 +7,6 @@ import com.bvcott.bubank.model.account.creationrequest.AccountCreationRequest;
 import com.bvcott.bubank.model.account.creationrequest.AdminComment;
 import com.bvcott.bubank.model.account.creationrequest.RequestStatus;
 import com.bvcott.bubank.model.user.Admin;
-import com.bvcott.bubank.model.user.Customer;
 import com.bvcott.bubank.repository.account.creationrequest.AccountCreationRequestRepository;
 import com.bvcott.bubank.repository.user.AdminRepository;
 import com.bvcott.bubank.repository.user.CustomerRepository;
