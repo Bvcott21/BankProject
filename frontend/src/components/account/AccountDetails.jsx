@@ -94,24 +94,37 @@ const AccountDetails = () => {
                 <Table striped bordered hover>
                     <thead>
                     <tr>
-                        <th>Transaction Number</th> {/* Updated */}
+                        <th>Transaction Number</th>
                         <th>Type</th>
                         <th>Amount</th>
                         <th>Time</th>
                         <th>Sender</th>
                         <th>Receiver</th>
+                        {/* New columns */}
+                        <th>Merchant Name</th>
+                        <th>Merchant Category</th>
                     </tr>
                     </thead>
                     <tbody>
                     {transactions.map((txn) => (
-                        <tr key={txn.transactionNumber}> {/* Updated */}
+                        <tr key={txn.transactionNumber}>
                             <td>{txn.transactionNumber}</td>
-                            {/* Updated */}
-                            <th>{formatTransactionType(txn)}</th>
+                            <td>{formatTransactionType(txn)}</td>
                             <td>{txn.amount.toFixed(2)}</td>
                             <td>{new Date(txn.timestamp).toLocaleString()}</td>
-                            <td>{txn.transferDirection === "RECEIVER" ? txn.senderAccountNumber : "N/A"}</td>
-                            <td>{txn.transferDirection === "SENDER" ? txn.receivingAccountNumber : "N/A"}</td>
+                            <td>
+                                {txn.transferDirection === "RECEIVER"
+                                    ? txn.senderAccountNumber
+                                    : "N/A"}
+                            </td>
+                            <td>
+                                {txn.transferDirection === "SENDER"
+                                    ? txn.receivingAccountNumber
+                                    : "N/A"}
+                            </td>
+                            {/* Display merchant data if present; otherwise fallback to "N/A" */}
+                            <td>{txn.merchantName || "N/A"}</td>
+                            <td>{txn.merchantCategory || "N/A"}</td>
                         </tr>
                     ))}
                     </tbody>
