@@ -3,8 +3,9 @@ package com.bvcott.bubank.model.transaction.transfer;
 import com.bvcott.bubank.model.transaction.Transaction;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Entity @Table(name = "TRANSFER_TRANSACTIONS") @Data
+@Entity @Table(name = "TRANSFER_TRANSACTIONS") @Data @EqualsAndHashCode(callSuper = true)
 public class TransferTransaction extends Transaction {
     private String receivingAccountNumber;
 

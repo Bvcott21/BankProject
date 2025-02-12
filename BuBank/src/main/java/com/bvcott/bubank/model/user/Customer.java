@@ -7,11 +7,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity @Table(name = "CUSTOMER_USER") @Data
+@Entity @Table(name = "CUSTOMER_USER") @Data @EqualsAndHashCode(callSuper = true)
 public class Customer extends User {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
