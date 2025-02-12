@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="64c6a83d-1b19-49d1-a3d6-94f73d544b9c" name="Changes" comment="Admin's own comments now have a light green background.">
-      <change beforePath="$PROJECT_DIR$/../BuBank/src/main/java/com/bvcott/bubank/mapper/transaction/TransactionMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BuBank/src/main/java/com/bvcott/bubank/mapper/transaction/TransactionMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BuBank/src/main/java/com/bvcott/bubank/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BuBank/src/main/java/com/bvcott/bubank/service/TransactionService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/account/AccountDetails.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/account/AccountDetails.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -103,7 +101,7 @@
       <workItem from="1737460848821" duration="15241000" />
       <workItem from="1737633756984" duration="12645000" />
       <workItem from="1738057507038" duration="1053000" />
-      <workItem from="1738598863779" duration="1382000" />
+      <workItem from="1738598863779" duration="1687000" />
     </task>
     <task id="LOCAL-00001" summary="Created unauthorized page.">
       <option name="closed" value="true" />
