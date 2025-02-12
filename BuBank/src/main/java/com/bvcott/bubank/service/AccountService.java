@@ -2,8 +2,6 @@ package com.bvcott.bubank.service;
 
 import com.bvcott.bubank.dto.CreateAccountRequestDTO;
 import com.bvcott.bubank.model.account.creationrequest.AccountCreationRequest;
-import com.bvcott.bubank.model.account.creationrequest.AdminComment;
-import com.bvcott.bubank.model.user.Admin;
 import com.bvcott.bubank.model.user.Customer;
 import com.bvcott.bubank.model.account.BusinessAccount;
 import com.bvcott.bubank.model.account.CheckingAccount;
@@ -32,7 +30,6 @@ public class AccountService {
     private final UserRepository userRepo;
     private final AccountCreationRequestRepository requestRepo;
     private final CustomerRepository customerRepo;
-    private final AdminRepository adminRepo;
     private static final Logger log = LoggerFactory.getLogger(AccountService.class);
     
     public AccountService(AccountRepository accountRepo,
@@ -44,7 +41,6 @@ public class AccountService {
         this.userRepo = userRepo;
         this.requestRepo = requestRepo;
         this.customerRepo = customerRepo;
-        this.adminRepo = adminRepo;
     }
 
     public AccountCreationRequest createAccountRequest(CreateAccountRequestDTO dto, String username) {
