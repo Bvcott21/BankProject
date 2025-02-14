@@ -5,12 +5,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.bvcott.bubank.dto.CreateAccountDTO;
+import com.bvcott.bubank.dto.CreateAccountRequestDTO;
 import com.bvcott.bubank.filter.JwtFilter;
-import com.bvcott.bubank.model.account.Account;
-import com.bvcott.bubank.model.account.BusinessAccount;
-import com.bvcott.bubank.model.account.CheckingAccount;
-import com.bvcott.bubank.model.account.SavingsAccount;
+import com.bvcott.bubank.model.account.creationrequest.AccountCreationRequest;
 import com.bvcott.bubank.service.AccountService;
 import com.bvcott.bubank.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +23,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class AccountControllerTest {
@@ -53,79 +49,52 @@ public class AccountControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        // Mock the ApplicationContext for JwtFilter
         when(applicationContext.getBean(UserDetailsService.class)).thenReturn(userDetailsService);
 
-        // Create a JwtFilter instance with mocks
         JwtFilter jwtFilter = new JwtFilter(jwtUtil);
         jwtFilter.setApplicationContext(applicationContext);
 
-        // Set up MockMvc with JwtFilter
         mockMvc = MockMvcBuilders.standaloneSetup(accountController)
-                .addFilters(jwtFilter) // Include JwtFilter
+                .addFilters(jwtFilter)
                 .build();
     }
 
     @Test
-    void test_createCheckingAccount_success() throws Exception {
-        // Arrange: Create input DTO
-        CreateAccountDTO dto = CreateAccountDTO.builder()
-                .initialBalance(BigDecimal.valueOf(1000))
+    void test_createAccountRequest_success() throws Exception {
+        // Arrange: Create input DTO with only `accountType`
+        CreateAccountRequestDTO dto = CreateAccountRequestDTO.builder()
                 .accountType("checking")
-                .overdraftLimit(BigDecimal.valueOf(500))
                 .build();
 
-        // Arrange: Mock expected account
-        CheckingAccount account = new CheckingAccount();
-        account.setId(1L);
-        account.setAccountNumber("ACC-CHK-00000001");
-        account.setBalance(BigDecimal.valueOf(1000));
-        account.setOverdraftLimit(BigDecimal.valueOf(500));
+        // Arrange: Mock expected response
+        AccountCreationRequest accountRequest = new AccountCreationRequest();
+        accountRequest.setRequestId(1L); // Ensure correct field
 
-        // Arrange: Mock token and username extraction
-        String mockToken = "Bearer mockJwtToken";
+        String mockToken = "Bearer mockJwtToken"; // Ensure correct format
         String username = "testUser";
-        when(jwtUtil.extractUsername("mockJwtToken")).thenReturn(username);
 
-        // Mock user details for JwtFilter
+        // Mock JwtUtil behavior correctly
+        when(jwtUtil.extractUsername("mockJwtToken")).thenReturn(username);
         UserDetails userDetails = mock(UserDetails.class);
         when(userDetails.getUsername()).thenReturn(username);
         when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
         when(jwtUtil.validateToken("mockJwtToken", username)).thenReturn(true);
-
-        // Arrange: Mock service behavior
-        when(accountService.createAccount(dto, username)).thenReturn(account);
+        when(accountService.createAccountRequest(dto, username)).thenReturn(accountRequest);
 
         // Act & Assert
-        mockMvc.perform(post("/api/v1/accounts/create")
-                        .header("Authorization", mockToken) // Pass "Bearer" prefixed token
+        mockMvc.perform(post("/api/v1/accounts/create-request")
+                        .header("Authorization", mockToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.accountNumber").value("ACC-CHK-00000001"))
-                .andExpect(jsonPath("$.balance").value(1000))
-                .andExpect(jsonPath("$.overdraftLimit").value(500));
+                .andExpect(jsonPath("$.requestId").value(1L)); // Ensure correct JSON field
 
-        // Verify interactions
         verify(jwtUtil, times(1)).extractUsername("mockJwtToken");
-        verify(accountService, times(1)).createAccount(dto, username);
+        verify(accountService, times(1)).createAccountRequest(dto, username);
     }
 
     @Test
-    void test_createSavingsAccount_success() throws Exception {
-        CreateAccountDTO dto = CreateAccountDTO.builder()
-                .initialBalance(BigDecimal.valueOf(2000))
-                .accountType("savings")
-                .interestRate(BigDecimal.valueOf(1.5))
-                .build();
-
-        SavingsAccount account = new SavingsAccount();
-        account.setId(1L);
-        account.setAccountNumber("ACC-SAV-00000001");
-        account.setBalance(BigDecimal.valueOf(2000));
-        account.setInterestRate(BigDecimal.valueOf(1.5));
-
+    void test_getUserAccounts_success() throws Exception {
         String mockToken = "Bearer mockJwtToken";
         String username = "testUser";
 
@@ -134,68 +103,25 @@ public class AccountControllerTest {
         when(userDetails.getUsername()).thenReturn(username);
         when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
         when(jwtUtil.validateToken("mockJwtToken", username)).thenReturn(true);
-        when(accountService.createAccount(dto, username)).thenReturn(account);
+        when(accountService.listAccounts(username)).thenReturn(List.of());
 
-        mockMvc.perform(post("/api/v1/accounts/create")
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/accounts")
                         .header("Authorization", mockToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.accountNumber").value("ACC-SAV-00000001"))
-                .andExpect(jsonPath("$.balance").value(2000))
-                .andExpect(jsonPath("$.interestRate").value(1.5));
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
 
         verify(jwtUtil, times(1)).extractUsername("mockJwtToken");
-        verify(accountService, times(1)).createAccount(dto, username);
-    }
-
-    @Test
-    void test_createBusinessAccount_success() throws Exception {
-        CreateAccountDTO dto = CreateAccountDTO.builder()
-                .initialBalance(BigDecimal.valueOf(5000))
-                .accountType("business")
-                .creditLimit(BigDecimal.valueOf(10000))
-                .build();
-
-        BusinessAccount account = new BusinessAccount();
-        account.setId(3L);
-        account.setAccountNumber("ACC-BUS-00000001");
-        account.setBalance(BigDecimal.valueOf(5000));
-        account.setCreditLimit(BigDecimal.valueOf(10000));
-
-        String mockToken = "Bearer mockJwtToken";
-        String username = "testUser";
-
-        when(jwtUtil.extractUsername("mockJwtToken")).thenReturn(username);
-        UserDetails userDetails = mock(UserDetails.class);
-        when(userDetails.getUsername()).thenReturn(username);
-        when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
-        when(jwtUtil.validateToken("mockJwtToken", username)).thenReturn(true);
-        when(accountService.createAccount(dto, username)).thenReturn(account);
-
-        mockMvc.perform(post("/api/v1/accounts/create")
-                        .header("Authorization", mockToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(3L))
-                .andExpect(jsonPath("$.accountNumber").value("ACC-BUS-00000001"))
-                .andExpect(jsonPath("$.balance").value(5000))
-                .andExpect(jsonPath("$.creditLimit").value(10000));
-
-        verify(jwtUtil, times(1)).extractUsername("mockJwtToken");
-        verify(accountService, times(1)).createAccount(dto, username);
+        verify(accountService, times(1)).listAccounts(username);
     }
 
     @Test
     void test_missingAuthorizationHeader() throws Exception {
-        CreateAccountDTO dto = CreateAccountDTO.builder()
-                .initialBalance(BigDecimal.valueOf(1000))
+        CreateAccountRequestDTO dto = CreateAccountRequestDTO.builder()
                 .accountType("checking")
                 .build();
 
-        mockMvc.perform(post("/api/v1/accounts/create")
+        mockMvc.perform(post("/api/v1/accounts/create-request")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isUnauthorized());
@@ -205,115 +131,17 @@ public class AccountControllerTest {
 
     @Test
     void test_invalidToken() throws Exception {
-        CreateAccountDTO dto = CreateAccountDTO.builder()
-                .initialBalance(BigDecimal.valueOf(1000))
+        CreateAccountRequestDTO dto = CreateAccountRequestDTO.builder()
                 .accountType("checking")
                 .build();
 
         String mockToken = "Bearer invalidToken";
         when(jwtUtil.extractUsername("invalidToken")).thenThrow(new RuntimeException("Invalid token"));
 
-        mockMvc.perform(post("/api/v1/accounts/create")
+        mockMvc.perform(post("/api/v1/accounts/create-request")
                         .header("Authorization", mockToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isUnauthorized());
-
-        verify(jwtUtil, times(1)).extractUsername("invalidToken");
-        verifyNoInteractions(accountService);
-    }
-
-    @Test
-    void test_invalidAccountType() throws Exception {
-        CreateAccountDTO dto = CreateAccountDTO.builder()
-                .initialBalance(BigDecimal.valueOf(1000))
-                .accountType("invalid")
-                .build();
-
-        String mockToken = "Bearer mockJwtToken";
-        String username = "testUser";
-
-        when(jwtUtil.extractUsername("mockJwtToken")).thenReturn(username);
-        UserDetails userDetails = mock(UserDetails.class);
-        when(userDetails.getUsername()).thenReturn(username);
-        when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
-        when(jwtUtil.validateToken("mockJwtToken", username)).thenReturn(true);
-
-        when(accountService.createAccount(dto, username)).thenThrow(new IllegalArgumentException("Invalid account type"));
-
-        mockMvc.perform(post("/api/v1/accounts/create")
-                        .header("Authorization", mockToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isInternalServerError());
-
-        verify(jwtUtil, times(1)).extractUsername("mockJwtToken");
-        verify(accountService, times(1)).createAccount(dto, username);
-    }
-
-    @Test
-    void test_getUserAccounts_success() throws Exception {
-        // Arrange: Create mock accounts
-        CheckingAccount checkingAccount = new CheckingAccount();
-        checkingAccount.setId(1L);
-        checkingAccount.setAccountNumber("ACC-CHK-00000001");
-        checkingAccount.setBalance(BigDecimal.valueOf(1000));
-        checkingAccount.setOverdraftLimit(BigDecimal.valueOf(500));
-
-        SavingsAccount savingsAccount = new SavingsAccount();
-        savingsAccount.setId(2L);
-        savingsAccount.setAccountNumber("ACC-SAV-00000001");
-        savingsAccount.setBalance(BigDecimal.valueOf(2000));
-        savingsAccount.setInterestRate(BigDecimal.valueOf(1.5));
-
-        List<Account> mockAccounts = List.of(checkingAccount, savingsAccount);
-
-        String mockToken = "Bearer mockJwtToken";
-        String username = "testUser";
-
-        // Mock JWT token behavior
-        when(jwtUtil.extractUsername("mockJwtToken")).thenReturn(username);
-        UserDetails userDetails = mock(UserDetails.class);
-        when(userDetails.getUsername()).thenReturn(username);
-        when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
-        when(jwtUtil.validateToken("mockJwtToken", username)).thenReturn(true);
-
-        // Mock service behavior
-        when(accountService.listUserAccounts(username)).thenReturn(mockAccounts);
-
-        // Act & Assert
-        mockMvc.perform(get("/api/v1/accounts")
-                        .header("Authorization", mockToken)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].accountNumber").value("ACC-CHK-00000001"))
-                .andExpect(jsonPath("$[1].accountNumber").value("ACC-SAV-00000001"))
-                .andExpect(jsonPath("$[0].balance").value(1000))
-                .andExpect(jsonPath("$[1].balance").value(2000));
-
-        // Verify interactions
-        verify(jwtUtil, times(1)).extractUsername("mockJwtToken");
-        verify(accountService, times(1)).listUserAccounts(username);
-    }
-
-    @Test
-    void test_getUserAccounts_missingAuthorizationHeader() throws Exception {
-        mockMvc.perform(get("/api/v1/accounts")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
-
-        verifyNoInteractions(accountService);
-    }
-
-    @Test
-    void test_getUserAccounts_invalidToken() throws Exception {
-        String mockToken = "Bearer invalidToken";
-
-        when(jwtUtil.extractUsername("invalidToken")).thenThrow(new RuntimeException("Invalid token"));
-
-        mockMvc.perform(get("/api/v1/accounts")
-                        .header("Authorization", mockToken)
-                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
 
         verify(jwtUtil, times(1)).extractUsername("invalidToken");

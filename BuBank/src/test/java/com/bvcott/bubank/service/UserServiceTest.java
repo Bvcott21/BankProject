@@ -3,6 +3,7 @@ package com.bvcott.bubank.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.bvcott.bubank.model.user.Customer;
 import com.bvcott.bubank.model.user.User;
 import com.bvcott.bubank.repository.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +29,7 @@ public class UserServiceTest {
 
     @Test
     void test_findByUsername_userExists() {
-        User user = new User();
+        User user = new Customer();
         user.setUsername("testUser");
 
         when(userRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
