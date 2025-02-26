@@ -53,6 +53,7 @@ public class TransactionSeeder {
                         accountService.deposit(account.getAccountNumber(), amount);
                     case "withdraw":
                         log.debug("[SEED] - Creating withdrawal for account {} - with amount: {}", account.getAccountNumber(), amount);
+                        account = getAccountById(account.getId());
                         if(account.getBalance().doubleValue() > amount.doubleValue()) {
                             accountService.withdraw(account.getAccountNumber(), amount);
                         }
@@ -61,6 +62,11 @@ public class TransactionSeeder {
                 }
             }
         }
+    }
+
+    private Account getAccountById(Long id) {
+        return accountRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Can't find user"));
     }
 
     private void createTransfers() {
