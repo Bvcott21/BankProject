@@ -98,7 +98,7 @@ public class TransactionSeeder {
                         .build();
 
                     txnService.createTransaction(dto);
-                    log.debug("Creating transaction with details: {}", dto);
+                    log.debug("[SEED] - Creating transaction with details: {}", dto);
                 } 
 
             }
