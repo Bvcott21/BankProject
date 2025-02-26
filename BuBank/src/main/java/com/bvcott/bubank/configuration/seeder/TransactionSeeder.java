@@ -1,6 +1,8 @@
 package com.bvcott.bubank.configuration.seeder;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -9,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.bvcott.bubank.dto.TransactionDTO;
+import com.bvcott.bubank.dto.TransactionDTO.TransactionDTOBuilder;
 import com.bvcott.bubank.model.account.Account;
 import com.bvcott.bubank.model.transaction.TransactionType;
+import com.bvcott.bubank.model.transaction.merchant.MerchantCategory;
 import com.bvcott.bubank.repository.AccountRepository;
 import com.bvcott.bubank.service.AccountService;
 import com.bvcott.bubank.service.TransactionService;
@@ -31,6 +35,7 @@ public class TransactionSeeder {
     public void seed() {
         createDepositsAndWithdraws();
         createTransfers();
+        createMerchantTransactions();
     }
 
     private void createDepositsAndWithdraws() {
@@ -98,10 +103,95 @@ public class TransactionSeeder {
 
             }
         }
-        
-        
+    }
 
+    private void createMerchantTransactions() {
+        log.debug("[SEED] - Creating merchant transactions");
+        List<Account> allAccounts = fetchAllAccounts();
 
+        for(Account account : allAccounts) {
+            long numberOfTransfers = Math.round(Math.random() * 65);
+            
+
+            for(long i = 0; i < numberOfTransfers; i++) {
+                createMerchantTransaction(account);
+            }
+        }
+    }
+
+    private void createMerchantTransaction(Account account) {
+        int transactionCategorySelector = Math
+            .toIntExact(Math
+                .round(Math.random() * (MerchantCategory.values().length - 1)));
+        BigDecimal amount = BigDecimal.valueOf(Math.random() * 350);
+        
+        TransactionDTOBuilder txnBuilder = TransactionDTO
+            .builder()
+            .accountNumber(account.getAccountNumber())
+            .transactionType(TransactionType.MERCHANT)
+            .amount(amount.doubleValue());
+
+        TransactionDTO dto = null;
+
+        switch(transactionCategorySelector) {
+            case 0:
+                List<String> retailMerchants = new ArrayList<>(Arrays.asList("B&Q", "Dunkin' Donuts", "Amazon", "Apple"));
+                dto = txnBuilder
+                    .merchantCategory(MerchantCategory.RETAIL)
+                    .merchantName(merchantSelector(retailMerchants))
+                    .build();
+                break;
+            case 1:
+                List<String> groceriesMerchants = new ArrayList<>(Arrays.asList("Morrisons",  "Tesco", "Sainsbury's",  "Marks & Spencers"));
+                dto = txnBuilder
+                    .merchantCategory(MerchantCategory.GROCERIES)
+                    .merchantName(merchantSelector(groceriesMerchants))
+                    .build();
+                break;
+            case 2:
+                List<String> utilitiesMerchants = new ArrayList<>(Arrays.asList("British Gas", "OVO", "Good Energy", "Apple Store", "Microsoft"));
+                dto = txnBuilder
+                    .merchantCategory(MerchantCategory.UTILITIES)
+                    .merchantName(merchantSelector(utilitiesMerchants))
+                    .build();
+                break;
+            case 3:
+                List<String> transportMerchants = new ArrayList<>(Arrays.asList("TfL", "Trainline", "American Airlines", "British Airways"));
+                dto = txnBuilder
+                    .merchantCategory(MerchantCategory.TRANSPORT)
+                    .merchantName(merchantSelector(transportMerchants))
+                    .build();
+                break;
+            case 4:
+            List<String> entertainmentMerchants = new ArrayList<>(Arrays.asList("Vue", "Netflix", "Amazon Prime", "Apple TV+", "Crunchyroll"));
+                dto = txnBuilder
+                    .merchantCategory(MerchantCategory.ENTERTAINMENT)
+                    .merchantName(merchantSelector(entertainmentMerchants))
+                    .build();
+                break;
+            case 5:
+                List<String> otherMerchants = new ArrayList<>(Arrays.asList("The Corner Shop", "The Body Shop", "Parking Ticket"));
+                dto = txnBuilder
+                    .merchantCategory(MerchantCategory.OTHER)
+                    .merchantName(merchantSelector(otherMerchants))
+                    .build();
+                break;
+            default:
+                break;
+        }
+        
+        account = getAccountById(account.getId());
+        if(account.getBalance().doubleValue() > amount.doubleValue()) {
+            log.debug("Creating merchant transaction with details: {}", dto);
+            txnService.createTransaction(dto);
+        }
+        
+    }
+
+    private String merchantSelector(List<String> merchants) {
+        int randomIndex = new Random().nextInt(merchants.size());
+        String randomMerchant = merchants.get(randomIndex);
+        return randomMerchant;
     }
 
     private List<Account> fetchAllAccounts() {
