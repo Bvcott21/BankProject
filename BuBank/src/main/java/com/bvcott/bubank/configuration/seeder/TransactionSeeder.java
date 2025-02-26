@@ -72,23 +72,25 @@ public class TransactionSeeder {
     private void createTransfers() {
         log.debug("[SEED] - Creating transfers");
         List<Account> allAccounts = fetchAllAccounts();
-        long numberOfTransfers = Math.round(Math.random() * 25);
 
         for(Account account : allAccounts) {
-            BigDecimal amount = BigDecimal.valueOf(Math.random() * 500);
+            long numberOfTransfers = Math.round(Math.random() * 25);
+            
 
             for(long i = 0; i < numberOfTransfers; i++) {
+                BigDecimal amount = BigDecimal.valueOf(Math.random() * 500);
                 int receiverAccountIndex = Math.toIntExact(Math.round(Math.random() * (allAccounts.size() - 1)));
                 Account receiverAccount = allAccounts.get(receiverAccountIndex);
+                account = getAccountById(account.getId());
 
-                if(account.getBalance().doubleValue() > amount.doubleValue()) {
+                if(account.getBalance().doubleValue() > amount.doubleValue() && account != receiverAccount) {
                     TransactionDTO dto = TransactionDTO
-                    .builder()
-                    .accountNumber(account.getAccountNumber())
-                    .receivingAccountNumber(receiverAccount.getAccountNumber())
-                    .amount(amount.doubleValue())
-                    .transactionType(TransactionType.TRANSFER)
-                    .build();
+                        .builder()
+                        .accountNumber(account.getAccountNumber())
+                        .receivingAccountNumber(receiverAccount.getAccountNumber())
+                        .amount(amount.doubleValue())
+                        .transactionType(TransactionType.TRANSFER)
+                        .build();
 
                     txnService.createTransaction(dto);
                     log.debug("Creating transaction with details: {}", dto);
