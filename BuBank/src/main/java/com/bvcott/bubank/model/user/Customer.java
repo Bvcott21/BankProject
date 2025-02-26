@@ -8,6 +8,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,14 @@ import java.util.List;
 public class Customer extends User {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @ToString.Exclude
     private List<Account> accounts = new ArrayList<>();
+
+    public Customer(String username, String password, Role role) {
+        super(username, password, role);
+    }
+    
+    public Customer() {}
 
     public void addAccount(Account account) {
         this.accounts.add(account);

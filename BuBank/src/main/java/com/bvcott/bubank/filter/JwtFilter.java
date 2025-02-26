@@ -49,6 +49,13 @@ public class JwtFilter extends OncePerRequestFilter implements ApplicationContex
         log.info("Incoming Request URI: {}", requestURI);
         log.info("Authorization Header: {}", authorizationHeader);
 
+        // ✅ **Bypass JWT filter for H2 Console**
+        if (requestURI.startsWith("/h2-console")) {
+            log.info("Bypassing JWT authentication for H2 Console");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // Skip public endpoints
         if (requestURI.startsWith("/api/v1/auth/register") || requestURI.startsWith("/api/v1/auth/login")) {
             log.info("Public endpoint accessed: {}", requestURI);

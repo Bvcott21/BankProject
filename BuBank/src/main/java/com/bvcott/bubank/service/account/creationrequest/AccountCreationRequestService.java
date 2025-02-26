@@ -11,6 +11,7 @@ import com.bvcott.bubank.repository.account.creationrequest.AccountCreationReque
 import com.bvcott.bubank.repository.user.AdminRepository;
 import com.bvcott.bubank.service.AccountService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +35,7 @@ public class AccountCreationRequestService {
         return requestRepo.findAll();
     }
 
+    @Transactional
     public AccountCreationRequestDTO addCommentToCreationRequest(Long requestId, AdminCommentDTO commentDTO, String username) {
         Admin admin = adminRepo.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Admin not found for username: " + username));
@@ -64,6 +66,7 @@ public class AccountCreationRequestService {
         return new AccountCreationRequestDTO(request);
     }
 
+    @Transactional
     public AccountCreationRequestDTO updateAccountCreationRequestStatus(Long requestId, String username, RequestStatus newStatus, CreateAccountDTO dto) {
         AccountCreationRequest request = requestRepo.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Account creation request not found for id: " + requestId));
