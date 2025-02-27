@@ -6,10 +6,10 @@ const ProtectedRoute = ({ children, requiredRole }) => {
    const { user, accessToken } = useAuth();
 
    console.log("ProtectedRoute Debugging:");
-   console.log("User Role:", user?.role);
-   console.log("Required Role:", requiredRole);
-   console.log("Access Token from Context:", accessToken);
-   console.log("Access Token from Local Storage:", localStorage.getItem("accessToken"));
+   console.log("[ProtectedRoute] - User Role:", user?.role);
+   console.log("[ProtectedRoute] - Required Role:", requiredRole);
+   console.log("[ProtectedRoute] - Access Token from Context:", accessToken);
+   console.log("[ProtectedRoute] - Access Token from Local Storage:", localStorage.getItem("accessToken"));
 
    if (!accessToken) {
       console.warn("Access token missing. Redirecting to login...");

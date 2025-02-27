@@ -11,10 +11,14 @@ import CreateTransactionForm from "./components/txn/CreateTransactionForm";
 import AdminDashboard from "./pages/AdminDashboard";
 import Unauthorized from "./pages/Unauthorized";
 import AccountCreationRequestDetailsPage from "./pages/AccountCreationRequestDetailsPage";
+import Header from "./components/Header";
 
 function App() {
   return (
+    <>
+    
     <Router>
+      <Header />
       <div className="container mt-4">
         <Routes>
             {/*Public routes*/}
@@ -83,6 +87,7 @@ function App() {
         </Routes>
       </div>
     </Router>
+    </>
   );
 }
 

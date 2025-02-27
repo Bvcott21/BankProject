@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
 import authService from "../../services/authService";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+    const { login, user } = useAuth();
     const [credentials, setCredentials] = useState({ username: "", password: "" });
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -17,16 +21,15 @@ const Login = () => {
         setIsLoading(true);
 
         try {
-            const userData = await authService.login(credentials); // Call login service
-            const role = userData.role;
+           await login(credentials);
 
-            localStorage.setItem("user", JSON.stringify(userData));
-            console.log("User logged in: ", userData);
-            if (role === "ROLE_ADMIN") {
-                window.location.href = "/admin/dashboard";
-            } else {
-                window.location.href = "/dashboard"; // Redirect on success
-            }
+           if(user?.role === "ROLE_CUSTOMER") {
+                navigate('/dashboard');
+           }
+
+           if(user?.role === "ROLE_ADMIN") {
+                navigate('/admin/dashboard')
+           }
         } catch (err) {
             setError("Login failed. Please check your username and password.");
             console.error("Login error: ", err);
