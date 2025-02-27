@@ -1,6 +1,5 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import authService from "../services/authService";
-import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -43,11 +42,7 @@ export const AuthProvider = ({ children }) => {
             console.error("login error:", err);
             throw err;
         }
-        // localStorage.setItem("user", JSON.stringify(userData));
-        // localStorage.setItem("accessToken", userData.accessToken);
-        // setUser(userData);
-        // setAccessToken(userData.accessToken);
-        // console.log("Login successful. User and token set in context.");
+        
     };
 
     const logout = async () => {
