@@ -19,4 +19,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<TransferTransaction> findByAccountAndDirection(
             @Param("accountNumber") String accountNumber,
             @Param("transferDirection") TransferDirection transferDirection);
+    @Query(name = "Transaction.findMerchantTransactionsByAccountNumber")
+    List<Transaction> findMerchantTransactionsByAccountNumber(@Param("accountNumber") String accountNumber);
 }
