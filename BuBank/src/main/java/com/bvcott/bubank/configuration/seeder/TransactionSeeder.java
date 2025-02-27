@@ -16,52 +16,49 @@ import com.bvcott.bubank.model.account.Account;
 import com.bvcott.bubank.model.transaction.TransactionType;
 import com.bvcott.bubank.model.transaction.merchant.MerchantCategory;
 import com.bvcott.bubank.repository.AccountRepository;
-import com.bvcott.bubank.service.AccountService;
 import com.bvcott.bubank.service.TransactionService;
 
 @Component
 public class TransactionSeeder {
     private static final Logger log = LoggerFactory.getLogger(TransactionSeeder.class);
     private AccountRepository accountRepo;
-    private AccountService accountService;
     private TransactionService txnService;
 
-    public TransactionSeeder(AccountRepository accountRepo, AccountService accountService, TransactionService txnService) {
+    public TransactionSeeder(AccountRepository accountRepo, TransactionService txnService) {
         this.accountRepo = accountRepo;
-        this.accountService = accountService;
         this.txnService = txnService;
     }
 
     public void seed() {
-        createDepositsAndWithdraws();
-        createTransfers();
-        createMerchantTransactions();
+        createTransactions();
     }
 
-    private void createDepositsAndWithdraws() {
-        log.debug("[SEED] - Creating deposit and withdraws");
-
+    private void createTransactions() {
+        // fetch all accounts
         List<Account> allAccounts = fetchAllAccounts();
-
+        
+        // method call for each transaction type.
         for(Account account : allAccounts) {
-            long numberOfDeposits = Math.round(Math.random() * 25);
-            BigDecimal amount = BigDecimal.valueOf(Math.random() * 25000);
-            String deposit = "deposit", withdraw = "withdraw";
-            
-            Random random = new Random();
-            String depositOrWithdraw = random.nextBoolean() ? deposit : withdraw;
-            
-            for(long i = 0; i < numberOfDeposits; i++) {
-                switch(depositOrWithdraw) {
-                    case "deposit":
-                        log.debug("[SEED] - Creating deposit for account {} - with amount: {}", account.getAccountNumber(), amount);
-                        accountService.deposit(account.getAccountNumber(), amount);
-                    case "withdraw":
-                        log.debug("[SEED] - Creating withdrawal for account {} - with amount: {}", account.getAccountNumber(), amount);
-                        account = getAccountById(account.getId());
-                        if(account.getBalance().doubleValue() > amount.doubleValue()) {
-                            accountService.withdraw(account.getAccountNumber(), amount);
-                        }
+            // random number of transactions
+            int numberOfTransactions = Math.toIntExact(Math.round(Math.random() * 75));
+
+            for(int i = 0; i < numberOfTransactions; i++) {
+                // random transaction type selector
+                int randomIndex = new Random().nextInt(4);
+
+                switch(randomIndex){
+                    case 0:
+                        createDeposit(account);
+                        break;
+                    case 1:
+                        createWithdraw(account);
+                        break;
+                    case 2:
+                        createTransfer(account);
+                        break;
+                    case 3:
+                        createMerchantTransaction(account);
+                        break;
                     default:
                         break;
                 }
@@ -69,54 +66,58 @@ public class TransactionSeeder {
         }
     }
 
-    private Account getAccountById(Long id) {
-        return accountRepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("Can't find user"));
+    private void createDeposit(Account account) {
+        BigDecimal amount = BigDecimal.valueOf(Math.random() * 25000);
+        log.debug("[SEED] - Creating deposit for account {} - with amount: {}", account.getAccountNumber(), amount);
+
+        TransactionDTO dto = TransactionDTO
+                            .builder()
+                            .accountNumber(account.getAccountNumber())
+                            .amount(amount.doubleValue())
+                            .transactionType(TransactionType.DEPOSIT)
+                            .build();
+        txnService.createTransaction(dto);
+
     }
 
-    private void createTransfers() {
-        log.debug("[SEED] - Creating transfers");
-        List<Account> allAccounts = fetchAllAccounts();
+    private void createWithdraw(Account account) {
+        BigDecimal amount = BigDecimal.valueOf(Math.random() * 25000);
+        log.debug("[SEED] - Creating withdrawal for account {} - with amount: {}", account.getAccountNumber(), amount);
 
-        for(Account account : allAccounts) {
-            long numberOfTransfers = Math.round(Math.random() * 25);
-            
+        account = getAccountById(account.getId());
 
-            for(long i = 0; i < numberOfTransfers; i++) {
-                BigDecimal amount = BigDecimal.valueOf(Math.random() * 500);
-                int receiverAccountIndex = Math.toIntExact(Math.round(Math.random() * (allAccounts.size() - 1)));
-                Account receiverAccount = allAccounts.get(receiverAccountIndex);
-                account = getAccountById(account.getId());
+        if(account.getBalance().doubleValue() > amount.doubleValue()) {
+            TransactionDTO dto = TransactionDTO
+                            .builder()
+                            .accountNumber(account.getAccountNumber())
+                            .amount(amount.doubleValue())
+                            .transactionType(TransactionType.WITHDRAWAL)
+                            .build();
 
-                if(account.getBalance().doubleValue() > amount.doubleValue() && account != receiverAccount) {
-                    TransactionDTO dto = TransactionDTO
-                        .builder()
-                        .accountNumber(account.getAccountNumber())
-                        .receivingAccountNumber(receiverAccount.getAccountNumber())
-                        .amount(amount.doubleValue())
-                        .transactionType(TransactionType.TRANSFER)
-                        .build();
-
-                    txnService.createTransaction(dto);
-                    log.debug("[SEED] - Creating transaction with details: {}", dto);
-                } 
-
-            }
+            txnService.createTransaction(dto);
         }
     }
 
-    private void createMerchantTransactions() {
-        log.debug("[SEED] - Creating merchant transactions");
+    private void createTransfer(Account account) {
         List<Account> allAccounts = fetchAllAccounts();
+        BigDecimal amount = BigDecimal.valueOf(Math.random() * 500);
+        int receiverAccountIndex = Math.toIntExact(Math.round(Math.random() * (allAccounts.size() - 1)));
+        Account receiverAccount = allAccounts.get(receiverAccountIndex);
+        account = getAccountById(account.getId());
+        log.debug("[SEED] - Creating transfer transaction, sender: {}, receiver: {}, amount {}", account.getAccountNumber(), receiverAccount.getAccountNumber(), amount);
 
-        for(Account account : allAccounts) {
-            long numberOfTransfers = Math.round(Math.random() * 65);
-            
+        if(account.getBalance().doubleValue() > amount.doubleValue() && account != receiverAccount) {
+            TransactionDTO dto = TransactionDTO
+                .builder()
+                .accountNumber(account.getAccountNumber())
+                .receivingAccountNumber(receiverAccount.getAccountNumber())
+                .amount(amount.doubleValue())
+                .transactionType(TransactionType.TRANSFER)
+                .build();
 
-            for(long i = 0; i < numberOfTransfers; i++) {
-                createMerchantTransaction(account);
-            }
-        }
+            txnService.createTransaction(dto);
+            log.debug("[SEED] - Created transaction");
+        } 
     }
 
     private void createMerchantTransaction(Account account) {
@@ -182,7 +183,7 @@ public class TransactionSeeder {
         
         account = getAccountById(account.getId());
         if(account.getBalance().doubleValue() > amount.doubleValue()) {
-            log.debug("Creating merchant transaction with details: {}", dto);
+            log.debug("[SEED] - Creating merchant transaction with details: {}", dto);
             txnService.createTransaction(dto);
         }
         
@@ -192,6 +193,11 @@ public class TransactionSeeder {
         int randomIndex = new Random().nextInt(merchants.size());
         String randomMerchant = merchants.get(randomIndex);
         return randomMerchant;
+    }
+
+    private Account getAccountById(Long id) {
+        return accountRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Can't find user"));
     }
 
     private List<Account> fetchAllAccounts() {
