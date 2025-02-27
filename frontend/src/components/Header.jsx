@@ -1,29 +1,41 @@
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Header = () => {
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const isLoggedIn = !!localStorage.getItem('accessToken');
-    const userRole = localStorage.getItem('role');
+
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    }
 
     return (
         <Navbar bg='dark' data-bs-theme='dark' expand='lg' className='bg-body-tertiary'>
-            {console.log("[Header component] - isLoggedIn? ", isLoggedIn, 'userRole: ', userRole)}
-            {console.log("[Header component] - localStorage: ", user?.role)}
             <Container>
-                <Navbar.Brand>BuBank</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/">BuBank</Navbar.Brand>
+
                 <Navbar.Toggle aria-controls='basic-navbar-nav' />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link>Link 1</Nav.Link>
-                        <Nav.Link>Link 2</Nav.Link>
-                        <Nav.Link>Link 3</Nav.Link>
-                        <Nav.Link>Profile</Nav.Link>
-                        <Nav.Link>Sign In</Nav.Link>
+                        { isLoggedIn && 
+                            <Nav.Link as={Link} to={user?.role === "ROLE_CUSTOMER" ? "/dashboard" : "/admin/dashboard"}>Dashboard</Nav.Link> 
+                        }
+                    </Nav>
+                    <Nav className="ms-auto">
+                        {!isLoggedIn && 
+                            <>    
+                                <Nav.Link as={Link} to="/login">Sign In</Nav.Link>
+                                <Nav.Link as={Link} to='/register'>Register</Nav.Link>
+                            </>
+                        }
+                        {isLoggedIn && 
+                            <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+                        }
                     </Nav>
                 </Navbar.Collapse>
             </Container>
