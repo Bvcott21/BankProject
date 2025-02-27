@@ -2,6 +2,7 @@ package com.bvcott.bubank.service;
 
 import com.bvcott.bubank.dto.CreateAccountRequestDTO;
 import com.bvcott.bubank.model.account.creationrequest.AccountCreationRequest;
+import com.bvcott.bubank.model.transaction.Transaction;
 import com.bvcott.bubank.model.user.Customer;
 import com.bvcott.bubank.model.account.BusinessAccount;
 import com.bvcott.bubank.model.account.CheckingAccount;
@@ -22,6 +23,7 @@ import com.bvcott.bubank.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -143,6 +145,11 @@ public class AccountService {
 
     public void deposit(String accountNumber, BigDecimal amount) {
         Account account = findAccountByAccountNumber(accountNumber);
+        Transaction txn = new Transaction();
+        txn.setAccountNumber(accountNumber);
+        txn.setAmount(amount);
+        txn.setTimestamp(LocalDateTime.now());
+        
         account.setBalance(account.getBalance().add(amount));
         accountRepo.save(account);
     }
