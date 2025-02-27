@@ -83,14 +83,13 @@ public class TransactionService {
     }
 
     private MerchantTransaction createMerchantTransactionEntity(TransactionDTO dto, String transactionNumber) {
-        // Use the mapper to copy over fields
         MerchantTransaction txn = txnMapper.toMerchantTransactionEntity(dto);
-        // Manually set the fields we want to override
+        
         txn.setTransactionNumber(transactionNumber);
         txn.setTimestamp(LocalDateTime.now());
-        // Possibly set the transactionType if you’re using the MERCHANT enum
+        
         txn.setTransactionType(TransactionType.MERCHANT);
-        return txn;
+        return txnRepo.save(txn);
     }
 
     private TransferTransaction processTransfer(TransactionDTO dto) {
@@ -183,11 +182,11 @@ public class TransactionService {
 
     public List<Transaction> getTransactionsForAccount(String accountNumber) {
         // Fetch sender transactions
-        log.info("Fetching transactions where account {} is the sender...", accountNumber);
+        log.debug("Fetching transactions where account {} is the sender...", accountNumber);
         List<TransferTransaction> senderTransactions = txnRepo.findByAccountAndDirection(accountNumber, TransferDirection.SENDER);
 
         // Fetch receiver transactions and populate senderAccountNumber
-        log.info("Fetching transactions where account {} is the receiver...", accountNumber);
+        log.debug("Fetching transactions where account {} is the receiver...", accountNumber);
         List<TransferTransaction> receiverTransactions = txnRepo.findByAccountAndDirection(accountNumber, TransferDirection.RECEIVER)
                 .stream()
                 .peek(transferTxn -> {
@@ -198,12 +197,32 @@ public class TransactionService {
                 })
                 .collect(Collectors.toList());
 
-        // Combine sender and receiver transactions
-        log.info("Combining sender and receiver transactions...");
-        List<Transaction> allTransactions = Stream.concat(senderTransactions.stream(), receiverTransactions.stream())
-                .sorted(Comparator.comparing(Transaction::getTimestamp).reversed()) // Sort by timestamp (desc)
+            // Fetching all deposit and withdrawal transactions.
+            log.debug("Fetching deposit and withdrawal transactions for account: {}", accountNumber);
+            List<Transaction> depositWithdrawalTransactions =
+            txnRepo.findByAccountNumber(accountNumber)
+                .stream()
+                .filter(t -> t.getTransactionType() == TransactionType.DEPOSIT
+                        || t.getTransactionType() == TransactionType.WITHDRAWAL)
                 .collect(Collectors.toList());
 
+            List<Transaction> merchantTransactions =
+            txnRepo.findByAccountNumber(accountNumber)
+                .stream()
+                .filter(t -> t.getTransactionType() == TransactionType.MERCHANT)
+                .collect(Collectors.toList());
+        
+        // Combine sender and receiver transactions
+        log.info("Combining all transactions");
+        List<Transaction> allTransactions = Stream.of(
+                senderTransactions.stream(), 
+                receiverTransactions.stream(),
+                depositWithdrawalTransactions.stream(),
+                merchantTransactions.stream())
+                .flatMap(s -> s) // Flatten to a single stream
+                .sorted(Comparator.comparing(Transaction::getTimestamp).reversed()) // Sort by timestamp (desc)
+                .collect(Collectors.toList());
+        
         log.info("Returning {} transactions for account {}", allTransactions.size(), accountNumber);
         return allTransactions;
     }
