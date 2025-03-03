@@ -1,0 +1,47 @@
+/* Hero Section */
+.hero-section {
+    background: url('../../images/bank-hero.png') center/cover no-repeat;
+    color: white;
+    padding: 80px 20px;
+    position: relative;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hero Content - Ensures vertical stacking */
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Adds spacing between elements */
+}
+
+/* Overlay for Hero Title and Lead Text */
+.hero-text, .hero-lead {
+    background: rgba(29, 36, 44, 0.8); /* Dark blue semi-transparent */
+    display: inline-block;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-weight: bold;
+    max-width: 80%; /* Ensures text wraps properly on large screens */
+}
+
+  
+  /* Centering Content */
+  .text-center {
+    text-align: center;
+  }
+  
+  /* Media Queries for Larger Screens */
+@media (min-width: 768px) {
+    .hero-section {
+        padding: 120px 40px;
+    }
+
+    .feature-card {
+      margin-bottom: 0; /* Remove bottom margin as columns are side by side */
+    }
+}

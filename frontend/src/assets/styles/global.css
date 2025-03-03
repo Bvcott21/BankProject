@@ -1,0 +1,148 @@
+/* Global Styles */
+body {
+    background-color: rgb(29, 36, 44); /* Dark blue background */
+    color: rgb(255, 255, 255); /* White text for readability */
+    font-family: 'Arial', sans-serif;
+}
+
+/* Navbar */
+.navbar {
+    background-color: rgb(29, 36, 44) !important; /* Dark blue */
+    border-bottom: 2px solid rgb(191, 145, 87); /* Gold bottom border */
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+    color: rgb(191, 145, 87) !important; /* Gold text */
+    font-weight: bold;
+    transition: color 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover {
+    color: rgb(255, 215, 0) !important; /* Bright gold hover */
+}
+
+/* Button with Dark Blue and Gold Theme */
+.btn-primary, .hero-btn {
+    background-color: rgb(29, 36, 44); /* Dark blue */
+    color: rgb(191, 145, 87); /* Gold */
+    border: 2px solid rgb(191, 145, 87); /* Gold border */
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    width: fit-content;
+}
+
+.btn-primary:hover, .hero-btn:hover {
+    background-color: rgb(191, 145, 87); /* Gold */
+    color: rgb(29, 36, 44); /* Dark blue */
+}
+
+/* Feature Cards */
+.feature-card {
+    background-color: rgb(36, 42, 52); /* Slightly lighter blue */
+    color: rgb(255, 255, 255); /* White text */
+    border: 1px solid rgb(191, 145, 87); /* Gold border */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    margin-bottom: 20px;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    background-color: rgb(191, 145, 87); /* Gold on hover */
+    color: rgb(29, 36, 44); /* Dark blue text */
+}
+
+/* Carousel Styling */
+.carousel {
+    background-color: rgb(29, 36, 44); /* Dark blue background */
+    padding: 40px 0; /* Adds spacing around */
+}
+
+/* Center carousel images with a slight border */
+.carousel img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(191, 145, 87, 0.3); /* Gold-like glow effect */
+    border: 2px solid rgb(191, 145, 87); /* Gold border */
+}
+
+/* Caption Styling */
+.carousel-caption {
+    background: rgba(29, 36, 44, 0.8); /* Dark blue semi-transparent overlay */
+    color: rgb(191, 145, 87); /* Gold text */
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+/* Active slide indicator dots */
+.carousel-indicators [data-bs-target] {
+    background-color: rgb(191, 145, 87) !important; /* Gold */
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+/* Hover effect for carousel buttons */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(90%) sepia(50%) saturate(1500%) hue-rotate(30deg); /* Gold effect */
+}
+
+/* Forms */
+.form-control {
+    background-color: rgb(36, 42, 52);
+    color: white;
+    border: 1px solid rgb(191, 145, 87);
+}
+
+.form-control:focus {
+    background-color: rgb(29, 36, 44);
+    color: white;
+    border-color: rgb(255, 215, 0);
+    box-shadow: 0 0 10px rgba(191, 145, 87, 0.5);
+}
+
+/* Table */
+.table {
+    background-color: rgb(36, 42, 52);
+    color: white;
+}
+
+.table th {
+    background-color: rgb(29, 36, 44);
+    color: rgb(191, 145, 87);
+    font-weight: bold;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgb(191, 145, 87);
+    color: rgb(29, 36, 44);
+}
+
+/* Footer */
+.footer {
+    background-color: rgb(29, 36, 44);
+    color: rgb(191, 145, 87);
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 50px;
+    border-top: 2px solid rgb(191, 145, 87);
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+    .feature-card {
+        margin-bottom: 0;
+    }
+
+    .carousel img {
+        max-width: 80%; /* Slightly reduce image size for better layout */
+    }
+}

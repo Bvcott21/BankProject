@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Unauthorized from "./pages/Unauthorized";
 import AccountCreationRequestDetailsPage from "./pages/AccountCreationRequestDetailsPage";
 import Header from "./components/Header";
+import './assets/styles/global.css'
 
 function App() {
   return (

@@ -3,6 +3,8 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import logo from '../assets/images/bubank_logo.png';
+
 
 const Header = () => {
     const navigate = useNavigate();
@@ -15,9 +17,12 @@ const Header = () => {
     }
 
     return (
-        <Navbar bg='dark' data-bs-theme='dark' expand='lg' className='bg-body-tertiary'>
+        <Navbar expand='lg' className='bg-body-tertiary background-blue'>
             <Container>
-                <Navbar.Brand as={Link} to="/">BuBank</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/">
+                <img src={logo} alt="BuBank Logo" className="img-fluid" style={{ maxHeight: "50px", objectFit: "contain" }} />
+                    BuBank
+                </Navbar.Brand>
 
                 <Navbar.Toggle aria-controls='basic-navbar-nav' />
                 <Navbar.Collapse id="basic-navbar-nav">
