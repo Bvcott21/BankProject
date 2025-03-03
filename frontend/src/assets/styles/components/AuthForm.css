@@ -1,0 +1,73 @@
+/* Shared Auth Form Container (Used by Login & Register) */
+.auth-form-container {
+    max-width: 400px;
+    background-color: rgb(36, 42, 52); /* Slightly lighter dark blue */
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    margin: auto;
+}
+
+/* Heading */
+.auth-form-container h2 {
+    color: rgb(191, 145, 87); /* Gold */
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Form Input Fields */
+.auth-form-container .form-control {
+    background-color: rgb(29, 36, 44);
+    color: white;
+    border: 1px solid rgb(191, 145, 87);
+    border-radius: 8px;
+}
+
+.auth-form-container .form-control:focus {
+    background-color: rgb(36, 42, 52);
+    color: white;
+    border-color: rgb(255, 215, 0);
+    box-shadow: 0 0 10px rgba(191, 145, 87, 0.5);
+}
+
+/* Labels */
+.auth-form-container .form-label {
+    color: rgb(191, 145, 87); /* Gold */
+    font-weight: bold;
+}
+
+/* Error / Info Messages */
+.auth-form-container .alert {
+    background-color: rgba(255, 215, 0, 0.1); /* Light gold background */
+    color: rgb(191, 145, 87);
+    border: 1px solid rgb(191, 145, 87);
+    border-radius: 8px;
+}
+
+/* Buttons */
+.auth-form-btn {
+    background-color: rgb(29, 36, 44); /* Dark blue */
+    color: rgb(191, 145, 87); /* Gold */
+    border: 2px solid rgb(191, 145, 87);
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    width: 100%;
+}
+
+.auth-form-btn:hover {
+    background-color: rgb(191, 145, 87);
+    color: rgb(29, 36, 44);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .auth-form-container {
+        width: 90%;
+        padding: 20px;
+    }
+}

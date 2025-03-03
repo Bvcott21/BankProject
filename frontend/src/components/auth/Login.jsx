@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import "../../assets/styles/components/AuthForm.css"; // Import shared styles
 
 const Login = () => {
     const { login, user } = useAuth();
@@ -20,15 +21,9 @@ const Login = () => {
         setIsLoading(true);
 
         try {
-           await login(credentials);
-
-           if(user?.role === "ROLE_CUSTOMER") {
-                navigate('/dashboard');
-           }
-
-           if(user?.role === "ROLE_ADMIN") {
-                navigate('/admin/dashboard')
-           }
+            await login(credentials);
+            if (user?.role === "ROLE_CUSTOMER") navigate('/dashboard');
+            if (user?.role === "ROLE_ADMIN") navigate('/admin/dashboard');
         } catch (err) {
             setError("Login failed. Please check your username and password.");
             console.error("Login error: ", err);
@@ -38,8 +33,8 @@ const Login = () => {
     };
 
     return (
-        <div className="container mt-5" style={{ maxWidth: "400px" }}>
-            <h2 className="mb-4 text-center">Login</h2>
+        <div className="auth-form-container mt-5">
+            <h2>Login</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="formUsername" className="mb-3">
@@ -66,7 +61,7 @@ const Login = () => {
                     />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" disabled={isLoading} className="w-100">
+                <Button type="submit" disabled={isLoading} className="auth-form-btn">
                     {isLoading ? "Logging in..." : "Login"}
                 </Button>
             </Form>
