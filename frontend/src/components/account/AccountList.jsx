@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { fetchAccounts } from "../../services/accountService";
-import { useNavigate } from "react-router-dom";
-import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
-import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Spinner from "react-bootstrap/Spinner";
+import { useNavigate } from "react-router-dom";
+import { fetchAccounts } from "../../services/accountService";
 
 const AccountList = () => {
     const [accounts, setAccounts] = useState([]);
@@ -27,15 +30,6 @@ const AccountList = () => {
         loadAccounts();
     }, []);
 
-    const columns = [
-        "Account Number",
-        "Account Type",
-        "Balance",
-        "Overdraft Limit",
-        "Credit Limit",
-        "Interest Rate",
-        "Actions",
-    ];
 
     const getAttributeValue = (account, attribute) => {
         switch (attribute) {
@@ -65,42 +59,46 @@ const AccountList = () => {
         }
     };
 
-    if (loading) {
-        return (
-            <div style={{ textAlign: "center", margin: "20px" }}>
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
-            </div>
-        );
-    }
-
-    if (error) {
-        return <Alert variant="danger">Error: {error.message || "Unknown Error"}</Alert>;
-    }
+    const renderCardText = (label, value) => {
+        if(value === "N/A") {
+            return null;
+        } else if(value !== "N/A" && label === null) {
+            return <Card.Text className="text-center">{value}</Card.Text>
+        } else {
+            return <Card.Text>{label}: {value}</Card.Text> 
+        }
+    };
 
     return (
-        <div>
-            <h2>My Accounts</h2>
-            <Table striped bordered hover responsive>
-                <thead>
-                <tr>
-                    {columns.map((column) => (
-                        <th key={column}>{column}</th>
-                    ))}
-                </tr>
-                </thead>
-                <tbody>
-                {accounts.map((account) => (
-                    <tr key={account.accountNumber}>
-                        {columns.map((column) => (
-                            <td key={column}>
-                                {column === "Actions" ? (
-                                    <>
+        <Container>
+            <h2 className="text-center my-4">My Accounts</h2>
+            {loading ? (
+                <div className="d-flex justify-content-center my-4">
+                    <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                </div>
+            ) : error ? (
+                <Alert variant="danger" className="text-center">
+                    Error: {error.message || "Unknown Error"}
+                </Alert>
+            ) : (
+                <Row>
+                    {accounts.map((account) => (
+                        <Col xs={12} md={6} lg={4} key={account.accountNumber} className="mb-3">
+                            <Card className="feature-card">
+                                <Card.Body>
+                                    <Card.Title className="text-center">{account.accountNumber}</Card.Title>
+                                    {renderCardText(null, getAttributeValue(account, "Account Type"))}
+                                    {renderCardText("Balance", getAttributeValue(account, "Balance"))}
+                                    {renderCardText("Overdraft Limit", getAttributeValue(account, "Overdraft Limit"))}
+                                    {renderCardText("Credit Limit", getAttributeValue(account, "Credit Limit"))}
+                                    {renderCardText("Interest Rate", getAttributeValue(account, "Interest Rate"))}
+                                    <div className="d-flex flex-column flex-md-row justify-content-center flex-wrap">
                                         <Button
                                             variant="primary"
                                             onClick={() => navigate(`/accounts/${account.accountNumber}`)}
-                                            className="me-2"
+                                            className="mb-2 mb-md-2 me-md-2 w-100 w-md-100"
                                         >
                                             View Details
                                         </Button>
@@ -111,7 +109,7 @@ const AccountList = () => {
                                                     state: { accountNumber: account.accountNumber, transactionType: "DEPOSIT" },
                                                 })
                                             }
-                                            className="me-2"
+                                            className="mb-2 mb-md-2 me-md-2 w-100 w-md-100"
                                         >
                                             Deposit
                                         </Button>
@@ -122,7 +120,7 @@ const AccountList = () => {
                                                     state: { accountNumber: account.accountNumber, transactionType: "WITHDRAWAL" },
                                                 })
                                             }
-                                            className="me-2"
+                                            className="mb-2 mb-md-2 me-md-2 w-100 w-md-100"
                                         >
                                             Withdraw
                                         </Button>
@@ -133,20 +131,18 @@ const AccountList = () => {
                                                     state: { accountNumber: account.accountNumber, transactionType: "TRANSFER" },
                                                 })
                                             }
+                                            className="w-100 w-md-100"
                                         >
                                             Transfer
                                         </Button>
-                                    </>
-                                ) : (
-                                    getAttributeValue(account, column)
-                                )}
-                            </td>
-                        ))}
-                    </tr>
-                ))}
-                </tbody>
-            </Table>
-        </div>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    ))}
+                </Row>
+            )}
+        </Container>
     );
 };
 
