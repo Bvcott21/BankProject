@@ -60,12 +60,12 @@ const AccountList = () => {
     };
 
     const renderCardText = (label, value) => {
-        if(value === "N/A") {
+        if (value === "N/A") {
             return null;
-        } else if(value !== "N/A" && label === null) {
-            return <Card.Text className="text-center">{value}</Card.Text>
+        } else if (value !== "N/A" && label === null) {
+            return <Card.Text className="text-center">{value}</Card.Text>;
         } else {
-            return <Card.Text>{label}: {value}</Card.Text> 
+            return <Card.Text>{label}: {value}</Card.Text>;
         }
     };
 

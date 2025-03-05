@@ -5,6 +5,8 @@ import {fetchTransactionsByAccount} from "../../services/txnService";
 import Spinner from "react-bootstrap/Spinner";
 import {Alert, Card} from "react-bootstrap";
 import Table from "react-bootstrap/Table";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 
 const AccountDetails = () => {
     const { accountNumber } = useParams();
@@ -35,6 +37,21 @@ const AccountDetails = () => {
         return txn.transactionType;
     };
 
+    const renderTransactionCard = (txn) => (
+        <Card key={txn.transactionNumber} className="mb-3 feature-card">
+            <Card.Body>
+                <Card.Title className="transaction-title">{txn.transactionNumber}</Card.Title>
+                {txn.transactionType !== "N/A" && <Card.Text>{formatTransactionType(txn)}</Card.Text>}
+                {txn.amount !== "N/A" && <Card.Text>Amount: ${txn.amount.toFixed(2)}</Card.Text>}
+                {txn.timestamp !== "N/A" && <Card.Text>Time: {new Date(txn.timestamp).toLocaleString()}</Card.Text>}
+                {txn.transferDirection === "RECEIVER" && txn.senderAccountNumber !== "N/A" && <Card.Text>Sender: {txn.senderAccountNumber}</Card.Text>}
+                {txn.transferDirection === "SENDER" && txn.receivingAccountNumber !== "N/A" && <Card.Text>Receiver: {txn.receivingAccountNumber}</Card.Text>}
+                {txn.merchantName && txn.merchantName !== "N/A" && <Card.Text>Merchant Name: {txn.merchantName}</Card.Text>}
+                {txn.merchantCategory && txn.merchantCategory !== "N/A" && <Card.Text>Merchant Category: {txn.merchantCategory}</Card.Text>}
+            </Card.Body>
+        </Card>
+    );
+
     if (loading) {
         return (
             <div className="text-center mt-3">
@@ -52,13 +69,13 @@ const AccountDetails = () => {
     return (
         <div className="container mt-4">
             {account && (
-                <Card className="mb-4">
+                <Card className="mb-4 feature-card">
                     <Card.Body>
-                        <Card.Title>{`Account Number: ${account.accountNumber}`}</Card.Title>
-                        <Card.Text>
+                        <Card.Title className="text-center">{`Account Number: ${account.accountNumber}`}</Card.Title>
+                        <Card.Text className="text-center">
                             <strong>Balance: </strong> ${account.balance.toFixed(2)}
                         </Card.Text>
-                        <Card.Text>
+                        <Card.Text className="text-center">
                             <strong>Account Type:</strong>{" "}
                             {account.overdraftLimit !== undefined
                                 ? "CHECKING"
@@ -68,67 +85,78 @@ const AccountDetails = () => {
                             }
                         </Card.Text>
                         {account.overdraftLimit && (
-                            <Card.Text>
+                            <Card.Text className="text-center">
                                 <strong>Overdraft Limit: </strong> ${account.overdraftLimit.toFixed(2)}
                             </Card.Text>
                         )}
                         {account.creditLimit && (
-                            <Card.Text>
+                            <Card.Text className="text-center">
                                 <strong>Credit Limit: </strong> ${account.creditLimit.toFixed(2)}
                             </Card.Text>
                         )}
                         {account.interestRate && (
-                            <Card.Text>
-                                <strong>Interest Rate</strong> ${account.interestRate.toFixed(2)}%
+                            <Card.Text className="text-center">
+                                <strong>Interest Rate: </strong> {account.interestRate.toFixed(2)}%
                             </Card.Text>
                         )}
                     </Card.Body>
                 </Card>
             )}
 
-            <h3>Transaction History</h3>
+            <h3 className="text-center">Transaction History</h3>
 
             {transactions.length === 0 ? (
-                <p>No transactions found for this account.</p>
+                <p className="text-center">No transactions found for this account.</p>
             ) : (
-                <Table striped bordered hover>
-                    <thead>
-                    <tr>
-                        <th>Transaction Number</th>
-                        <th>Type</th>
-                        <th>Amount</th>
-                        <th>Time</th>
-                        <th>Sender</th>
-                        <th>Receiver</th>
-                        {/* New columns */}
-                        <th>Merchant Name</th>
-                        <th>Merchant Category</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {transactions.map((txn) => (
-                        <tr key={txn.transactionNumber}>
-                            <td>{txn.transactionNumber}</td>
-                            <td>{formatTransactionType(txn)}</td>
-                            <td>{txn.amount.toFixed(2)}</td>
-                            <td>{new Date(txn.timestamp).toLocaleString()}</td>
-                            <td>
-                                {txn.transferDirection === "RECEIVER"
-                                    ? txn.senderAccountNumber
-                                    : "N/A"}
-                            </td>
-                            <td>
-                                {txn.transferDirection === "SENDER"
-                                    ? txn.receivingAccountNumber
-                                    : "N/A"}
-                            </td>
-                            {/* Display merchant data if present; otherwise fallback to "N/A" */}
-                            <td>{txn.merchantName || "N/A"}</td>
-                            <td>{txn.merchantCategory || "N/A"}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </Table>
+                <>
+                    <div className="d-none d-lg-block">
+                        <Table striped bordered hover responsive className="table-sm">
+                            <thead>
+                            <tr>
+                                <th>Transaction Number</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Time</th>
+                                <th>Sender</th>
+                                <th>Receiver</th>
+                                <th>Merchant Name</th>
+                                <th>Merchant Category</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {transactions.map((txn) => (
+                                <tr key={txn.transactionNumber}>
+                                    <td>{txn.transactionNumber}</td>
+                                    <td>{formatTransactionType(txn)}</td>
+                                    <td>{txn.amount.toFixed(2)}</td>
+                                    <td>{new Date(txn.timestamp).toLocaleString()}</td>
+                                    <td>
+                                        {txn.transferDirection === "RECEIVER"
+                                            ? txn.senderAccountNumber
+                                            : "N/A"}
+                                    </td>
+                                    <td>
+                                        {txn.transferDirection === "SENDER"
+                                            ? txn.receivingAccountNumber
+                                            : "N/A"}
+                                    </td>
+                                    <td>{txn.merchantName || "N/A"}</td>
+                                    <td>{txn.merchantCategory || "N/A"}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </Table>
+                    </div>
+                    <div className="d-lg-none">
+                        <Row>
+                            {transactions.map((txn) => (
+                                <Col xs={12} key={txn.transactionNumber}>
+                                    {renderTransactionCard(txn)}
+                                </Col>
+                            ))}
+                        </Row>
+                    </div>
+                </>
             )}
         </div>
     );
