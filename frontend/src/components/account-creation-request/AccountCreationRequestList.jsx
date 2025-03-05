@@ -2,8 +2,7 @@ import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {fetchAccountCreationRequests} from "../../services/accountService";
 import Spinner from "react-bootstrap/Spinner";
-import {Alert} from "react-bootstrap";
-import Table from "react-bootstrap/Table";
+import {Alert, Container, Table} from "react-bootstrap";
 
 const AccountCreationRequestList = () => {
     const [accountCreationRequests, setAccountCreationRequests] = useState([]);
@@ -73,13 +72,13 @@ const AccountCreationRequestList = () => {
     }
 
     return (
-        <div>
-            <h2>Account Creation Requests</h2>
-            <Table striped bordered hover responsive>
+        <Container>
+            <h2 className="text-center my-4">Account Creation Requests</h2>
+            <Table striped bordered hover responsive className="table-sm">
                 <thead>
                 <tr>
                     {columns.map((column) => (
-                        <th key={column}>{column}</th>
+                        <th key={column} className="text-center">{column}</th>
                     ))}
                 </tr>
                 </thead>
@@ -90,7 +89,7 @@ const AccountCreationRequestList = () => {
                         onClick={() => navigate(`/admin/account-requests/${accountCreationRequest.requestId}`)}
                         style={{ cursor: "pointer" }}>
                         {columns.map((column) => (
-                            <td key={column}>
+                            <td key={column} className="text-center">
                                 {getAttributeValue(accountCreationRequest, column)}
                             </td>
                         ))}
@@ -98,7 +97,7 @@ const AccountCreationRequestList = () => {
                 ))}
                 </tbody>
             </Table>
-        </div>
+        </Container>
     )
 }
 

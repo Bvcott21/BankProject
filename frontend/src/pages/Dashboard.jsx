@@ -11,7 +11,6 @@ const Dashboard = () => {
     }
 
     return <div>
-        <h1>Dashboard page.</h1>
         <AccountList />
         <div className="mt-3 d-flex gap-3">
             <Button

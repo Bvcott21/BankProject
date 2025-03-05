@@ -2,7 +2,6 @@ import AccountCreationRequestList from "../components/account-creation-request/A
 
 const AdminDashboard = () => {
     return <div>
-        <h1>Admin Dashboard</h1>
         <AccountCreationRequestList />
     </div>
 }
