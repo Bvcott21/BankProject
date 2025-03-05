@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Maven wrapper script
+# Use this script to run Maven commands without requiring a local installation of Maven.
+
+MAVEN_VERSION=3.8.6
+MVN_CMD="./mvnw"
+
+if [ -z "$MAVEN_OPTS" ]; then
+  MAVEN_OPTS="-Xmx1024m"
+fi
+
+if [ -f "$MVN_CMD" ]; then
+  exec "$MVN_CMD" "$@"
+else
+  echo "Maven wrapper script not found."
+  exit 1
+fi
