@@ -37,7 +37,7 @@ public class UserService implements UserDetailsService {
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Username not found with the provided username"));
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found with the provided username"));
     }
 
     @Override
