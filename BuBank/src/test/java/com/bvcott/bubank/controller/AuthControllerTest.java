@@ -145,11 +145,14 @@ class AuthControllerTest {
 
         ResponseEntity<Map<String, String>> response = authController.login(dto);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertNotNull(response.getBody());
-        assertEquals("accessToken", response.getBody().get("accessToken"));
-        assertEquals("refreshToken", response.getBody().get("refreshToken"));
-        assertEquals("testuser", response.getBody().get("username"));
+        Map<String, String> responseBody = response.getBody();
+        if (responseBody != null) {
+            assertEquals("accessToken", responseBody.get("accessToken"));
+            assertEquals("refreshToken", responseBody.get("refreshToken"));
+            assertEquals("testuser", responseBody.get("username"));
+        }
     }
 
     @Test
@@ -163,8 +166,10 @@ class AuthControllerTest {
 
         ResponseEntity<Map<String, String>> response = authController.refreshToken(Map.of("refreshToken", refreshToken));
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertNotNull(response.getBody());
-        assertEquals("newAccessToken", response.getBody().get("accessToken"));
+        Map<String, String> responseBody = response.getBody();
+        if(responseBody!=null)
+            assertEquals("newAccessToken", responseBody.get("accessToken"));
     }
 }
