@@ -11,6 +11,7 @@
 	<groupId>com.bvcott</groupId>
 	<artifactId>BuBank</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>BuBank</name>
 	<description>Event-Driven Bank Project</description>
 	<url/>
@@ -29,6 +30,9 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+	<modules>
+		<module>user-service</module>
+	</modules>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
