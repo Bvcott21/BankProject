@@ -68,7 +68,6 @@ class AccountCreationRequestControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void testAddComment() throws Exception {
-        AdminCommentDTO commentDTO = new AdminCommentDTO();
         AccountCreationRequest request = new AccountCreationRequest();
         AccountCreationRequestDTO requestDTO = new AccountCreationRequestDTO(request);
         when(requestService.addCommentToCreationRequest(anyLong(), any(AdminCommentDTO.class), any(String.class)))
@@ -94,7 +93,6 @@ class AccountCreationRequestControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void testUpdateRequestDecision() throws Exception {
-        CreateAccountDTO createAccountDTO = CreateAccountDTO.builder().build();
         AccountCreationRequest request = new AccountCreationRequest();
         AccountCreationRequestDTO requestDTO = new AccountCreationRequestDTO(request);
         when(requestService.updateAccountCreationRequestStatus(anyLong(), any(String.class), any(RequestStatus.class), any(CreateAccountDTO.class)))
