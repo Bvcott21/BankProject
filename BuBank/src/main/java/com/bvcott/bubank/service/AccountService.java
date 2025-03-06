@@ -58,8 +58,6 @@ public class AccountService {
         return request;
     }
 
-
-
     @Transactional
     public Account createAccount(CreateAccountDTO dto, String username) {
         log.info("Create account triggered with values: dto - {}, username: {}", dto, username);
