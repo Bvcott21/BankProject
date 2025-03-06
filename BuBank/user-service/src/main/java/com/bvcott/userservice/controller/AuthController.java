@@ -1,4 +1,7 @@
-package com.bvcott.bubank.controller;
+package com.bvcott.userservice.controller;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,13 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bvcott.bubank.dto.LoginSignupDTO;
-import com.bvcott.bubank.model.user.User;
-import com.bvcott.bubank.service.UserService;
-import com.bvcott.bubank.util.JwtUtil;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.bvcott.userservice.dto.LoginSignupDTO;
+import com.bvcott.userservice.model.User;
+import com.bvcott.userservice.service.UserService;
+import com.bvcott.userservice.util.JwtUtil;
 
 @RestController @RequestMapping("/api/v1/auth")
 public class AuthController {

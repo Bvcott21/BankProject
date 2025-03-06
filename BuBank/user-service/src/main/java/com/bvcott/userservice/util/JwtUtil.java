@@ -1,4 +1,4 @@
-package com.bvcott.bubank.util;
+package com.bvcott.userservice.util;
 
 import io.jsonwebtoken.security.Keys;
 

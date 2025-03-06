@@ -1,4 +1,4 @@
-package com.bvcott.bubank.dto;
+package com.bvcott.userservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

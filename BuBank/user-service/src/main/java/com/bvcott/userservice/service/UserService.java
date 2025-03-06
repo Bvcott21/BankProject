@@ -1,9 +1,4 @@
-package com.bvcott.bubank.service;
-
-import com.bvcott.bubank.model.user.Customer;
-import com.bvcott.bubank.model.user.Role;
-import com.bvcott.bubank.model.user.User;
-import com.bvcott.bubank.repository.user.UserRepository;
+package com.bvcott.userservice.service;
 
 import java.util.Collections;
 
@@ -12,6 +7,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.bvcott.userservice.model.Customer;
+import com.bvcott.userservice.model.Role;
+import com.bvcott.userservice.model.User;
+import com.bvcott.userservice.repository.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {

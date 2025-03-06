@@ -1,4 +1,4 @@
-package com.bvcott.bubank.model.user;
+package com.bvcott.userservice.model;
 
 public enum Role {
     ROLE_CUSTOMER,

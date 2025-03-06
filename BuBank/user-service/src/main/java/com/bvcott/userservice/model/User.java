@@ -1,4 +1,4 @@
-package com.bvcott.bubank.model.user;
+package com.bvcott.userservice.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
