@@ -1,4 +1,4 @@
-package com.bvcott.bubank.configuration;
+package com.bvcott.userservice.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
