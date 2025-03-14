@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.bvcott.accountservice.client.CustomerClient;
@@ -86,9 +87,10 @@ public class AccountService {
     //     return account;
     // }
 
-    public List<AccountDTO> listAccounts(String username) {
+    public List<AccountDTO> listAccounts() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         log.info("Finding account for username: {}", username);
-        CustomerDTO customer = customerClient.getCustomerByUsername(username);
+        CustomerDTO customer = customerClient.getCustomerByUsername();
 
         return customer.getAccounts();
     }

@@ -11,6 +11,6 @@ public interface CustomerClient {
     CustomerDTO getCustomerById(Long id);
 
     // Need to double check and fix this one
-    @GetMapping("/api/v1/customers/username/{username}")
-    CustomerDTO getCustomerByUsername(String username);
+    @GetMapping("/api/v1/customers")
+    CustomerDTO getCustomerByUsername();
 }

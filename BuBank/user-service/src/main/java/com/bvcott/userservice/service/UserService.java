@@ -15,18 +15,27 @@ import com.bvcott.userservice.dto.CustomerDTO;
 import com.bvcott.userservice.model.Customer;
 import com.bvcott.userservice.model.Role;
 import com.bvcott.userservice.model.User;
+import com.bvcott.userservice.repository.AdminRepository;
+import com.bvcott.userservice.repository.CustomerRepository;
 import com.bvcott.userservice.repository.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
+
+    private final AdminRepository adminRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AccountClient accountClient;
+    private final CustomerRepository customerRepo;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AccountClient accountClient) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, 
+        AccountClient accountClient, AdminRepository adminRepository,
+        CustomerRepository customerRepo) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.accountClient = accountClient;
+        this.adminRepository = adminRepository;
+        this.customerRepo = customerRepo;
     }
 
     public User registerCustomer(String username, String rawPassword) {
@@ -44,6 +53,18 @@ public class UserService implements UserDetailsService {
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with the provided username"));
+    }
+
+    public CustomerDTO findCustomerByUsername(String username) {
+        Customer customer = customerRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found with the provided username"));
+        
+        return CustomerDTO.builder()
+            .userId(customer.getUserId())
+            .username(customer.getUsername())
+            .role(customer.getRole().name())
+            .accounts(accountClient.getAccountsByCustomerId(customer.getUserId()))
+            .build();
     }
 
     public CustomerDTO findCustomerById(Long id) {

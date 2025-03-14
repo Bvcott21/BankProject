@@ -1,16 +1,15 @@
 package com.bvcott.accountservice.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bvcott.accountservice.dto.AccountDTO;
 import com.bvcott.accountservice.service.AccountService;
 
 @RestController @RequestMapping("/api/v1/accounts")
@@ -41,17 +40,18 @@ public class AccountController {
 
     @GetMapping
     public ResponseEntity<?> getUserAccounts() {
-        log.info("getUserAccounts triggered");
         try {
-            String username = SecurityContextHolder
-                    .getContext()
-                    .getAuthentication()
-                    .getName();
-            log.info("username: {}", username);
-            List<AccountDTO> accounts = accountService.listAccounts(username);
-            return ResponseEntity.ok(accounts);
-        } catch(RuntimeException ex) {
-            return ResponseEntity.status(500).body(ex.getMessage());
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || auth.getName() == null) {
+                log.warn("No authenticated user found in security context");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
+            }
+            String username = auth.getName();
+            log.info("getUserAccounts triggered for username: {}", username);
+            return ResponseEntity.ok(accountService.listAccounts());
+        } catch (Exception ex) {
+            log.error("Error retrieving accounts: {}", ex.getMessage(), ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving accounts");
         }
     }
 }

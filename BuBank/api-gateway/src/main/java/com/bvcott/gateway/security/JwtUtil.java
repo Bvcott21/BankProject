@@ -1,4 +1,4 @@
-package com.bvcott.accountservice.util;
+package com.bvcott.gateway.security;
 
 import io.jsonwebtoken.security.Keys;
 
