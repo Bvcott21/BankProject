@@ -2,10 +2,10 @@ import { api }  from './api';
 import { userApi } from './api';
 
 const authService = {
-    register: (userDetails) => userApi.post('/auth/register', userDetails),
+    register: (userDetails) => api.post('/auth/register', userDetails),
     login: async (credentials) => {
         console.log("Login API called with credentials", credentials);
-        const response = await userApi.post('/auth/login', credentials);
+        const response = await api.post('/auth/login', credentials);
         return response.data;
     },
     logout: async (navigate) => {
