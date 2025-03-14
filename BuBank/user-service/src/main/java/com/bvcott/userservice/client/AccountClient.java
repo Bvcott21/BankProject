@@ -12,4 +12,6 @@ import com.bvcott.userservice.dto.AccountDTO;
 public interface AccountClient {
     @GetMapping("/accounts/customer/{customerId}")
     List<AccountDTO> getAccountsByCustomerId(@PathVariable("customerId") Long customerId);
+    @GetMapping("/api/v1/accounts")
+    List<AccountDTO> getAllAccountsForCustomer();
 }
