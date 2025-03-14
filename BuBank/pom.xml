@@ -32,6 +32,7 @@
 		<module>user-service</module>
 		<module>eureka-discovery-server</module>
 		<module>account-service</module>
+		<module>api-gateway</module>
 	</modules>
 	<dependencies>
 		<dependency>
