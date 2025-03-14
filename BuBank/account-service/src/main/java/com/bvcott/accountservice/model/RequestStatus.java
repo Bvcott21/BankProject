@@ -1,4 +1,4 @@
-package com.bvcott.bubank.model.account.creationrequest;
+package com.bvcott.accountservice.model;
 
 public enum RequestStatus {
     PENDING,

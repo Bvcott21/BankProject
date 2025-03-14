@@ -1,4 +1,4 @@
-package com.bvcott.bubank.dto.account.creationrequest;
+package com.bvcott.accountservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data @AllArgsConstructor @NoArgsConstructor
 public class AdminCommentDTO {
-    private String username;
+    private Long adminId;
     private String comment;
     private LocalDateTime timestamp;
 }

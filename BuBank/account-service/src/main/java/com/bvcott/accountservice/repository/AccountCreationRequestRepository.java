@@ -1,7 +1,8 @@
-package com.bvcott.bubank.repository.account.creationrequest;
+package com.bvcott.accountservice.repository;
 
-import com.bvcott.bubank.model.account.creationrequest.AccountCreationRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.bvcott.accountservice.model.AccountCreationRequest;
 
 public interface AccountCreationRequestRepository extends JpaRepository<AccountCreationRequest, Long> {
 }

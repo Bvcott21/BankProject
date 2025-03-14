@@ -1,15 +1,24 @@
-package com.bvcott.bubank.model.account.creationrequest;
-
-import com.bvcott.bubank.model.user.Admin;
-import com.bvcott.bubank.model.user.Customer;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+package com.bvcott.accountservice.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
@@ -22,17 +31,15 @@ public class AccountCreationRequest {
     @Column(nullable = false)
     private String accountType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="REQUESTED_BY", nullable = false)
-    private Customer requestedBy;
+    @Column(name="REQUESTED_BY", nullable = false)
+    private Long requestedBy;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RequestStatus status = RequestStatus.PENDING;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "REVIEWED_BY")
-    private Admin reviewedBy;
+    @Column(name = "REVIEWED_BY")
+    private Long reviewedBy;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 

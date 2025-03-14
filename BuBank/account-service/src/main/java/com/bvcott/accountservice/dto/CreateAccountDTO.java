@@ -1,4 +1,4 @@
-package com.bvcott.bubank.dto;
+package com.bvcott.accountservice.dto;
 
 import java.math.BigDecimal;
 

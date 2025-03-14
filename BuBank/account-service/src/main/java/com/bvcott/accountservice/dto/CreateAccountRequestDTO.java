@@ -1,4 +1,4 @@
-package com.bvcott.bubank.dto;
+package com.bvcott.accountservice.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

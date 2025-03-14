@@ -1,4 +1,4 @@
-package com.bvcott.bubank.model.account;
+package com.bvcott.accountservice.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
