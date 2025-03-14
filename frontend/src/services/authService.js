@@ -1,5 +1,4 @@
 import { api }  from './api';
-import { userApi } from './api';
 
 const authService = {
     register: (userDetails) => api.post('/auth/register', userDetails),

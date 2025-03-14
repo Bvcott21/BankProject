@@ -1,8 +1,8 @@
-import { accountApi } from "./api";
+import { api } from "./api";
 
 export const fetchAccounts = async () => {
     try {
-        const response = await accountApi.get("/accounts");
+        const response = await api.get("/accounts");
         return response.data;
     } catch(error) {
         console.error("Error fetching accounts: ", error);
@@ -12,7 +12,7 @@ export const fetchAccounts = async () => {
 
 export const createAccountRequest = async (accountRequestData) => {
     try {
-        const response = await accountApi.post("/accounts/create-request", accountRequestData);
+        const response = await api.post("/accounts/create-request", accountRequestData);
         return response.data;
     } catch(error) {
         console.error("Error creating account: ", error);
@@ -22,7 +22,7 @@ export const createAccountRequest = async (accountRequestData) => {
 
 export const fetchAccountCreationRequests = async () => {
     try {
-        const response = await accountApi.get("/account-requests");
+        const response = await api.get("/account-requests");
         return response.data;
     } catch(error) {
         console.error("Error fetching account creation requests: ", error);
@@ -32,7 +32,7 @@ export const fetchAccountCreationRequests = async () => {
 
 export const fetchAccountCreationRequestById = async (requestId) => {
     try {
-        const response = await accountApi.get(`/account-requests/${requestId}`);
+        const response = await api.get(`/account-requests/${requestId}`);
         return response.data;
     } catch(error) {
         console.error("Error fetching account creation request: ", error);
@@ -42,7 +42,7 @@ export const fetchAccountCreationRequestById = async (requestId) => {
 
 export const addCommentToAccountCreationRequest = async (requestId, formData) => {
     try {
-        const response = await accountApi.post(`/account-requests/comment/${requestId}`, formData);
+        const response = await api.post(`/account-requests/comment/${requestId}`, formData);
         return response.data;
     } catch(error) {
         console.error("Error adding comment: ", error);
@@ -52,7 +52,7 @@ export const addCommentToAccountCreationRequest = async (requestId, formData) =>
 
 export const updateAccountCreationRequestStatus = async (requestId, newStatus, accountDetails) => {
     try {
-        const response = await accountApi.post(`/account-requests/${requestId}?newStatus=${newStatus}`, accountDetails);
+        const response = await api.post(`/account-requests/${requestId}?newStatus=${newStatus}`, accountDetails);
         return response.data;
     } catch(error) {
         console.error("Error updating account creation status: ", error);
